@@ -1,6 +1,3 @@
- - Acheteur -> IAcheteur
- - Vente -> IVente
-
 Fonctionnalités supplémentaires :
 
  - Ajouter attente
@@ -10,6 +7,11 @@ Fonctionnalités supplémentaires :
  - Commenter le code
  - Donner des infos aux clients, mettre a jour les prix
  - Systeme de round par enchere? 30 secondes me parrait trop peu pour une enchere
+ - Creer un systeme de salles/hub
+	-> Gros effet de bord
+	-> Permettre la création de nouvelles salles?
+	-> Nom de salles
+	
 
 
 
