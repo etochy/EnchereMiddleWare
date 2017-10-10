@@ -1,4 +1,13 @@
+ - Acheteur -> IAcheteur
+ - Vente -> IVente
+
 Fonctionnalités supplémentaires :
 
  - Ajouter attente
- - 
+ - Augmenter le temps
+ - Verifier le nombre d'encheres restantes, ne pas faire de boucle infini
+ - Supprimer les encheres fini
+ - Commenter le code
+ - Donner des infos aux clients, mettre a jour les prix
+ - Systeme de round par enchere? 30 secondes me parrait trop peu pour une enchere
+
