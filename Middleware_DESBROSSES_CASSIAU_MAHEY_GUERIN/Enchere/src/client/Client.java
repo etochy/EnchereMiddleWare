@@ -17,7 +17,7 @@ public class Client extends UnicastRemoteObject implements Acheteur {
 	private Vente serveur;
 	private Objet currentObjet;
 	private EtatClient etat = EtatClient.ATTENTE;
-	private Chrono chrono = new Chrono(10000, this); // Chrono de 30sc
+	private Chrono chrono = new Chrono(30000, this); // Chrono de 30sc
 
 	public Client(String pseudo) throws RemoteException {
 		super();
