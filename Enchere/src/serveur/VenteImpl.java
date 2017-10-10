@@ -10,17 +10,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import client.Acheteur;
+import client.IAcheteur;
 
-public class VenteImpl extends UnicastRemoteObject implements Vente{
+public class VenteImpl extends UnicastRemoteObject implements IVente{
 	
 	private static final long serialVersionUID = 1L;
-	private List<Acheteur> listeAcheteurs = new ArrayList<Acheteur>();
-	private List<Acheteur> fileAttente = new ArrayList<Acheteur>();
-	private Map<Acheteur, Integer> enchereTemp = new HashMap<Acheteur, Integer>();
+	private List<IAcheteur> listeAcheteurs = new ArrayList<IAcheteur>();
+	private List<IAcheteur> fileAttente = new ArrayList<IAcheteur>();
+	private Map<IAcheteur, Integer> enchereTemp = new HashMap<IAcheteur, Integer>();
 	private Objet objetCourant;
 	private Stack<Objet> listeObjets;
-	private Acheteur acheteurCourant;
+	private IAcheteur acheteurCourant;
 	private EtatVente etatVente;
 	private final int clientMin = 2;
 	
@@ -39,8 +39,8 @@ public class VenteImpl extends UnicastRemoteObject implements Vente{
 
 
 	@Override
-	public synchronized boolean inscriptionAcheteur(String login, Acheteur acheteur) throws Exception{
-		for(Acheteur each : listeAcheteurs){
+	public synchronized boolean inscriptionAcheteur(String login, IAcheteur acheteur) throws Exception{
+		for(IAcheteur each : listeAcheteurs){
 			if(each.getPseudo().equals(login) || each.getPseudo().equals(acheteur.getPseudo())){
 				throw new Exception("Login deja pris");
 			}
@@ -50,7 +50,7 @@ public class VenteImpl extends UnicastRemoteObject implements Vente{
 		if(this.fileAttente.size() >= clientMin && this.etatVente == EtatVente.ATTENTE){
 			this.etatVente = EtatVente.ENCHERISSEMENT;	
 			
-			for(Acheteur each : this.fileAttente){
+			for(IAcheteur each : this.fileAttente){
 				this.listeAcheteurs.add(each);
 				each.objetVendu(null);
 			}
@@ -62,7 +62,7 @@ public class VenteImpl extends UnicastRemoteObject implements Vente{
 
 	
 	@Override
-	public synchronized int rencherir(int nouveauPrix, Acheteur acheteur) throws Exception{
+	public synchronized int rencherir(int nouveauPrix, IAcheteur acheteur) throws Exception{
 		this.enchereTemp.put(acheteur, nouveauPrix);
 		System.out.println(this.enchereTemp.size()+"/"+this.listeAcheteurs.size());
 		
@@ -74,7 +74,7 @@ public class VenteImpl extends UnicastRemoteObject implements Vente{
 			else{
 				actualiserObjet();
 				//On renvoie le resultat du tour
-				for(Acheteur each : this.listeAcheteurs){
+				for(IAcheteur each : this.listeAcheteurs){
 					each.nouveauPrix(this.objetCourant.getPrixCourant(), this.acheteurCourant);
 				}
 			}
@@ -97,7 +97,7 @@ public class VenteImpl extends UnicastRemoteObject implements Vente{
 			this.objetCourant.setGagnant(this.acheteurCourant.getPseudo());
 			
 			//Envoie des resultats finaux pour l'objet courant
-			for(Acheteur each : this.listeAcheteurs){
+			for(IAcheteur each : this.listeAcheteurs){
 				each.objetVendu(this.acheteurCourant.getPseudo());
 				
 			}
@@ -115,12 +115,12 @@ public class VenteImpl extends UnicastRemoteObject implements Vente{
 			this.objetCourant = this.listeObjets.pop();
 			this.objetCourant.setGagnant("");
 			this.etatVente = EtatVente.ENCHERISSEMENT;
-			for(Acheteur each : this.listeAcheteurs){
+			for(IAcheteur each : this.listeAcheteurs){
 				each.objetVendu(null);
 			}
 		} else{
 			this.etatVente = EtatVente.TERMINE;
-			for(Acheteur each : this.listeAcheteurs){
+			for(IAcheteur each : this.listeAcheteurs){
 				each.finEnchere();
 			}
 			return 0;
@@ -135,11 +135,11 @@ public class VenteImpl extends UnicastRemoteObject implements Vente{
 	 * @throws RemoteException
 	 */
 	public void actualiserObjet() throws RemoteException{
-		Set<Acheteur> cles = this.enchereTemp.keySet();
-		Iterator<Acheteur> it = cles.iterator();
+		Set<IAcheteur> cles = this.enchereTemp.keySet();
+		Iterator<IAcheteur> it = cles.iterator();
 		
 		while (it.hasNext()){
-			Acheteur cle = it.next();
+			IAcheteur cle = it.next();
 			Integer valeur = this.enchereTemp.get(cle);
 			
 			if(valeur > this.objetCourant.getPrixCourant() || (valeur == this.objetCourant.getPrixCourant() && cle.getChrono() < acheteurCourant.getChrono())){
@@ -157,11 +157,11 @@ public class VenteImpl extends UnicastRemoteObject implements Vente{
 	 * @return true si on a reçu que des -1, donc si l'enchere est finie, sinon false.
 	 */
 	public boolean enchereFinie(){	
-		Set<Acheteur> cles = this.enchereTemp.keySet();
-		Iterator<Acheteur> it = cles.iterator();
+		Set<IAcheteur> cles = this.enchereTemp.keySet();
+		Iterator<IAcheteur> it = cles.iterator();
 		
 		while (it.hasNext()){
-			Acheteur cle = it.next();
+			IAcheteur cle = it.next();
 			Integer valeur = this.enchereTemp.get(cle);
 			
 			if(valeur != -1){
@@ -188,11 +188,11 @@ public class VenteImpl extends UnicastRemoteObject implements Vente{
 		return this.objetCourant;
 	}
 
-	public List<Acheteur> getListeAcheteurs() {
+	public List<IAcheteur> getListeAcheteurs() {
 		return listeAcheteurs;
 	}
 
-	public void setListeAcheteurs(List<Acheteur> listeAcheteurs) {
+	public void setListeAcheteurs(List<IAcheteur> listeAcheteurs) {
 		this.listeAcheteurs = listeAcheteurs;
 	}
 
@@ -212,11 +212,11 @@ public class VenteImpl extends UnicastRemoteObject implements Vente{
 		this.listeObjets = listeObjets;
 	}
 
-	public Acheteur getAcheteurCourant() {
+	public IAcheteur getAcheteurCourant() {
 		return acheteurCourant;
 	}
 
-	public void setAcheteurCourant(Acheteur acheteurCourant) {
+	public void setAcheteurCourant(IAcheteur acheteurCourant) {
 		this.acheteurCourant = acheteurCourant;
 	}
 

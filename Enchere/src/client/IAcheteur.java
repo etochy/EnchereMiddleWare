@@ -3,7 +3,7 @@ package client;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface Acheteur extends Remote {
+public interface IAcheteur extends Remote {
 
 	/**
 	 * 
@@ -13,7 +13,7 @@ public interface Acheteur extends Remote {
 	 */
 	public void objetVendu(String gagnant) throws RemoteException;
 
-	public void nouveauPrix(int prix, Acheteur gagnant) throws RemoteException;
+	public void nouveauPrix(int prix, IAcheteur gagnant) throws RemoteException;
 	
 	public void finEnchere() throws RemoteException;
 

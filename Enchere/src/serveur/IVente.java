@@ -3,9 +3,9 @@ package serveur;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import client.Acheteur;
+import client.IAcheteur;
 
-public interface Vente extends Remote {
+public interface IVente extends Remote {
 
 	/**
 	 * Methode servant a inscrire un acheteur a une vente. Ajoute l'acheteur dans la liste des acheteurs
@@ -13,7 +13,7 @@ public interface Vente extends Remote {
 	 * @param acheteur
 	 * @throws RemoteException
 	 */
-	public boolean inscriptionAcheteur(String login, Acheteur acheteur) throws RemoteException, Exception;
+	public boolean inscriptionAcheteur(String login, IAcheteur acheteur) throws RemoteException, Exception;
 	
 	/**
 	 * Augmente le prix de l'objet a vendre.
@@ -22,7 +22,7 @@ public interface Vente extends Remote {
 	 * @return le nouveau prix de l'objet a vendre
 	 * @throws RemoteException
 	 */
-	public int rencherir(int nouveauPrix, Acheteur acheteur) throws RemoteException, Exception;
+	public int rencherir(int nouveauPrix, IAcheteur acheteur) throws RemoteException, Exception;
 	
 
 	/**

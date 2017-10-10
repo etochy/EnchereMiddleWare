@@ -5,16 +5,16 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import serveur.Objet;
-import serveur.Vente;
+import serveur.IVente;
 
-public class Client extends UnicastRemoteObject implements Acheteur {
+public class Client extends UnicastRemoteObject implements IAcheteur {
 
 	private static final long serialVersionUID = 1L;
 	private static final String adresseServeur = "localhost:8090/enchere";
 
 	private String pseudo;
 	private VueClient vue;
-	private Vente serveur;
+	private IVente serveur;
 	private Objet currentObjet;
 	private EtatClient etat = EtatClient.ATTENTE;
 	private Chrono chrono = new Chrono(30000, this); // Chrono de 30sc
@@ -27,9 +27,9 @@ public class Client extends UnicastRemoteObject implements Acheteur {
 		this.currentObjet = serveur.getObjet();
 	}
 
-	public static Vente connexionServeur() {
+	public static IVente connexionServeur() {
 		try {
-			Vente serveur = (Vente) Naming.lookup("//" + adresseServeur);
+			IVente serveur = (IVente) Naming.lookup("//" + adresseServeur);
 			System.out.println("Connexion au serveur " + adresseServeur + " reussi.");
 			return serveur;
 		} catch (Exception e) {
@@ -71,7 +71,7 @@ public class Client extends UnicastRemoteObject implements Acheteur {
 	}
 
 	@Override
-	public void nouveauPrix(int prix, Acheteur gagnant) throws RemoteException {
+	public void nouveauPrix(int prix, IAcheteur gagnant) throws RemoteException {
 		try {
 			this.currentObjet.setPrixCourant(prix);
 			this.currentObjet.setGagnant(gagnant.getPseudo());
@@ -119,11 +119,11 @@ public class Client extends UnicastRemoteObject implements Acheteur {
 		return chrono.getTemps();
 	}
 
-	public Vente getServeur() {
+	public IVente getServeur() {
 		return serveur;
 	}
 
-	public void setServeur(Vente serveur) {
+	public void setServeur(IVente serveur) {
 		this.serveur = serveur;
 	}
 
