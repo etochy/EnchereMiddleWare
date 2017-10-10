@@ -1,0 +1,4 @@
+Fonctionnalités supplémentaires :
+
+ - Ajouter attente
+ - 
