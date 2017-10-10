@@ -1,7 +1,5 @@
 Fonctionnalités supplémentaires :
 
- - Ajouter attente
- - Augmenter le temps
  - Verifier le nombre d'encheres restantes, ne pas faire de boucle infini
  - Supprimer les encheres fini
  - Commenter le code
@@ -11,10 +9,7 @@ Fonctionnalités supplémentaires :
 	-> Gros effet de bord
 	-> Permettre la création de nouvelles salles?
 	-> Nom de salles
-	
-
-
-
+ - Problemes implementation RMI, mettre a jour (Objet et IVente dans Client)
 
 
  - Ajouter une base de donnée json (XML)
