@@ -11,3 +11,8 @@ Fonctionnalités supplémentaires :
  - Donner des infos aux clients, mettre a jour les prix
  - Systeme de round par enchere? 30 secondes me parrait trop peu pour une enchere
 
+
+
+
+
+ - Ajouter une base de donnée json (XML)
