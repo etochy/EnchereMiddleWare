@@ -18,29 +18,31 @@ public class Serveur{
 
 
 	public static void main(String[] argv) {
-		
+
 		try {
 			System.out.println("@ IP : " + InetAddress.getLocalHost());
 			
+// Init des objets, a dégager
 			bdd.initObjets();
 			VenteImpl vente = new VenteImpl(bdd.getListeObjets());
+			
 			LocateRegistry.createRegistry(port);
 			Naming.bind("//localhost:"+port+"/enchere", vente);
 
-	
-		while(true){
-			
-			//On recrÃ©e une nouvelle vente
-			if(vente.getEtatVente() == EtatVente.TERMINE){
-				bdd.initObjets();
-				vente = new VenteImpl(bdd.getListeObjets());
+			// Serveur lancé en continu, même si aucune enchere
+			while(true){
+
+				//On recrÃ©e une nouvelle vente
+				if(vente.getEtatVente() == EtatVente.TERMINE){
+					bdd.initObjets();
+					vente = new VenteImpl(bdd.getListeObjets());
+				}
+
 			}
-			
-		}
-			
+
 		} catch(RemoteException |  MalformedURLException | UnknownHostException | AlreadyBoundException e){
 			e.printStackTrace();
 		}		
 	}	
 }
-	
+
