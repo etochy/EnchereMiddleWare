@@ -1,8 +1,7 @@
 package serveur;
 
-import java.io.Serializable;
+public class Objet implements IObjet{
 
-public class Objet implements IObjet, Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private String nom;
