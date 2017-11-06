@@ -27,13 +27,13 @@ public interface IVente extends Remote {
 
 	/**
 	 * Methode permettant d ajouter un objet aux encheres.
-	 * @param objet l'objet a vendre.
+	 * @param nouveau l'objet a vendre.
 	 * @throws RemoteException
 	 */
-	public void ajouterObjet(Objet objet) throws RemoteException;
+	public void ajouterObjet(IObjet nouveau) throws RemoteException;
 	
 	
-	public Objet getObjet() throws RemoteException;
+	public IObjet getObjet() throws RemoteException;
 
 
 }

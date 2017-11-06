@@ -21,15 +21,15 @@ public class Serveur{
 
 		try {
 			System.out.println("@ IP : " + InetAddress.getLocalHost());
-			
-// Init des objets, a dégager
+
+			// Init des objets, a dï¿½gager
 			bdd.initObjets();
 			VenteImpl vente = new VenteImpl(bdd.getListeObjets());
-			
+
 			LocateRegistry.createRegistry(port);
 			Naming.bind("//localhost:"+port+"/enchere", vente);
 
-			// Serveur lancé en continu, même si aucune enchere
+			// Serveur lancï¿½ en continu, mï¿½me si aucune enchere
 			while(true){
 
 				//On recrÃ©e une nouvelle vente

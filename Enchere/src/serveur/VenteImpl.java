@@ -18,7 +18,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 	private List<IAcheteur> listeAcheteurs = new ArrayList<IAcheteur>();
 	private List<IAcheteur> fileAttente = new ArrayList<IAcheteur>();
 	private Map<IAcheteur, Integer> enchereTemp = new HashMap<IAcheteur, Integer>();
-	private Objet objetCourant;
+	private IObjet objetCourant;
 	private Stack<Objet> listeObjets;
 	private IAcheteur acheteurCourant;
 	private EtatVente etatVente;
@@ -174,9 +174,9 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 
 	@Override
-	public void ajouterObjet(Objet objet) throws RemoteException {
+	public void ajouterObjet(IObjet objet) throws RemoteException {
 		try {
-			this.listeObjets.push(objet);
+			this.listeObjets.push((Objet) objet);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -184,7 +184,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 	}
 
 	@Override
-	public Objet getObjet() throws RemoteException {
+	public IObjet getObjet() throws RemoteException {
 		return this.objetCourant;
 	}
 
@@ -196,11 +196,11 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		this.listeAcheteurs = listeAcheteurs;
 	}
 
-	public Objet getObjetCourant() {
+	public IObjet getObjetCourant() {
 		return objetCourant;
 	}
 
-	public void setObjetCourant(Objet objetCourant) {
+	public void setObjetCourant(IObjet objetCourant) {
 		this.objetCourant = objetCourant;
 	}
 
