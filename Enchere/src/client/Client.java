@@ -4,8 +4,9 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import serveur.Objet;
+import serveur.IObjet;
 import serveur.IVente;
+import serveur.Objet;
 
 public class Client extends UnicastRemoteObject implements IAcheteur {
 
@@ -15,7 +16,7 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 	private String pseudo;
 	private VueClient vue;
 	private IVente serveur;
-	private Objet currentObjet;
+	private IObjet currentObjet;
 	private EtatClient etat = EtatClient.ATTENTE;
 	private Chrono chrono = new Chrono(30000, this); // Chrono de 30sc
 
@@ -92,7 +93,7 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 	}
 	
 	public void nouvelleSoumission(String nom, String description, int prix) {
-		Objet nouveau = new Objet(nom, description, prix);
+		IObjet nouveau = new Objet(nom, description, prix);
 		try {
 			serveur.ajouterObjet(nouveau);
 			System.out.println("Soumission de l'objet " + nom + " au serveur.");
@@ -110,7 +111,7 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 	}
 
 	// getters and setters
-	public Objet getCurrentObjet() {
+	public IObjet getCurrentObjet() {
 		return currentObjet;
 	}
 

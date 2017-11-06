@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import serveur.Objet;
+import serveur.IObjet;
 
 public class VueClient extends JFrame implements ActionListener{
 
@@ -151,7 +151,7 @@ public class VueClient extends JFrame implements ActionListener{
 	}
 	
 	public void actualiserObjet() {
-		Objet objet = currentClient.getCurrentObjet();
+		IObjet objet = currentClient.getCurrentObjet();
 		lblPrixObjet.setText("Prix courant : " + objet.getPrixCourant() + " euros");
 		lblPseudo.setText("Gagnant : " + objet.getGagnant());
 		lblDescriptionObjet.setText(objet.getDescription());
