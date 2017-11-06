@@ -1,8 +1,8 @@
 package serveur;
 
-import java.rmi.Remote;
+import java.io.Serializable;
 
-public interface IObjet extends Remote {
+public interface IObjet extends Serializable {
 
 	String getNom();
 
