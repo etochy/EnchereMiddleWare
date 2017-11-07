@@ -6,10 +6,12 @@ Fonctionnalités supplémentaires :
  
 FONCTIONNALITES : 
  - Donner des infos aux clients, mettre a jour les prix
- 	- Mettre systeme de log dans vu client a la fin de chaque round : Gagnants, encheres, etc
- - Compteur d'encheres restantes
+ 	- Mettre systeme de log dans vu client a la fin de chaque round : Gagnants, encheres, etc => Esteban
+	
+ - Compteur d'encheres restantes => Sacha
+ 
  - Enlever l'init des objets en vente
- - Mettre en pause si aucun objet en vente
+ 	- Mettre en pause si aucun objet en vente => Sacha
 
 RAPPEL : 	
  - Systeme de round par enchere? 30 secondes par rounds
@@ -19,12 +21,12 @@ RAPPEL :
  
  APRES : 
  - Prendre en compte la deconnexion d'un client?
- - Creer un systeme de salles/hub
+ - Creer un systeme de salles/hub => Sitraka
 	-> Gros effet de bord
 	-> Permettre la création de nouvelles salles?
 	-> Nom de salles
  
- - Ajouter une base de donnée json (XML)
+ - Ajouter une base de donnée json (XML) => Alexis
  
 QUESTIONS
  - Creation de l'objet coté client ou serveur
