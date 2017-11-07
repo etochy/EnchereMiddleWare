@@ -1,15 +1,33 @@
 Fonctionnalités supplémentaires :
 
  - Verifier le nombre d'encheres restantes, ne pas faire de boucle infini
- - Supprimer les encheres fini
+ - Supprimer les encheres finis
  - Commenter le code
+ 
+FONCTIONNALITES : 
  - Donner des infos aux clients, mettre a jour les prix
- - Systeme de round par enchere? 30 secondes me parrait trop peu pour une enchere
- - Creer un systeme de salles/hub
+ 	- Mettre systeme de log dans vu client a la fin de chaque round : Gagnants, encheres, etc => Esteban
+	
+ - Compteur d'encheres restantes => Sacha
+ 
+ - Enlever l'init des objets en vente
+ 	- Mettre en pause si aucun objet en vente => Sacha
+
+RAPPEL : 	
+ - Systeme de round par enchere? 30 secondes par rounds
+ 
+ A CONTINUER: 
+ - Problemes implementation RMI, mettre a jour (Objet et IVente dans Client)
+ 
+ APRES : 
+ - Prendre en compte la deconnexion d'un client?
+ - Creer un systeme de salles/hub => Sitraka
 	-> Gros effet de bord
 	-> Permettre la création de nouvelles salles?
 	-> Nom de salles
- - Problemes implementation RMI, mettre a jour (Objet et IVente dans Client)
-
-
- - Ajouter une base de donnée json (XML)
+ 
+ - Ajouter une base de donnée json (XML) => Alexis
+ 
+QUESTIONS
+ - Creation de l'objet coté client ou serveur
+ - Archi en package ou en projets séparés, partage des interfaces??

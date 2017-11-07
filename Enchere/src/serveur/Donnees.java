@@ -36,7 +36,7 @@ public class Donnees {
 	 * @throws Exception so l'objet est deja en vente ou si l'acheteur n'est pas encore inscrit.
 	 */
 	public void ajouterArticle(Objet objet) throws Exception{
-		for(Objet each : this.listeObjets){
+		for(IObjet each : this.listeObjets){
 			if(each.equals(objet)){
 				throw new Exception("Objet deja existant");
 			}
