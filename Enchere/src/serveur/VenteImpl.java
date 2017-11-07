@@ -104,8 +104,9 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		}
 
 
-
+		// Lenteur entre changements : 
 		Thread.sleep(5000);
+		
 		this.acheteurCourant = null;
 		this.listeAcheteurs.addAll(this.fileAttente);
 		this.fileAttente.clear();
