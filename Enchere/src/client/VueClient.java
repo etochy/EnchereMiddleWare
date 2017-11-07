@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import serveur.IObjet;
@@ -30,7 +31,7 @@ public class VueClient extends JFrame implements ActionListener{
 	
 	private JLabel lblPrixObjet = new JLabel();
 	private JLabel lblNomObjet = new JLabel();
-	private JLabel lblDescriptionObjet = new JLabel();
+	private JTextArea lblDescriptionObjet = new JTextArea(3,1);
 	private JLabel lblPseudo = new JLabel();
 	private JLabel lblEncherir = new JLabel();
 	private JLabel lblChrono = new JLabel("chrono");
@@ -43,6 +44,7 @@ public class VueClient extends JFrame implements ActionListener{
 	
 	private JTextField txtEncherir = new JTextField();
 	private JTextField txtPseudo = new JTextField();
+	private JTextField txtIP = new JTextField("localhost:8090/enchere");
 	private JTextField txtSoumettreNomObjet = new JTextField();
 	private JTextField txtSoumettreDescriptionObjet = new JTextField();
 	private JTextField txtSoumettrePrixObjet = new JTextField();
@@ -57,33 +59,53 @@ public class VueClient extends JFrame implements ActionListener{
 		super();
 
 		//Definition de la fenetre
-		this.setSize(800,400);
+		this.setSize(400,400);
 		this.setTitle("Vente aux encheres");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Font fontBtn = new Font("Serif", Font.PLAIN, 10);
 
 		// PANEL INSCRIPTION
 		inscriptionPanel.setLayout(new GridBagLayout());
-	    txtPseudo.setPreferredSize(new Dimension(400, 40));   
-	    btnPseudo.setPreferredSize(new Dimension(100,40));
+	    txtPseudo.setPreferredSize(new Dimension(200, 40));
+	    txtIP.setPreferredSize(new Dimension(200, 40));
+	    btnPseudo.setPreferredSize(new Dimension(200,40));
 		GridBagConstraints gbc = new GridBagConstraints();
 
+	    gbc.gridx = 0;
+	    gbc.gridy = 1;
+	    gbc.gridheight = 1;
+	    gbc.gridwidth = 3;
+	    inscriptionPanel.add(new JLabel("Pseudo : "), gbc);
+	    
 	    gbc.gridx = 0;
 	    gbc.gridy = 2;
 	    gbc.gridheight = 1;
 	    gbc.gridwidth = 3;
 		inscriptionPanel.add(txtPseudo, gbc);
 		
-	    gbc.gridx = 4;
-	    gbc.gridy = 2;
+		gbc.gridx = 0;
+	    gbc.gridy = 3;
+	    gbc.gridheight = 1;
+	    gbc.gridwidth = 3;
+		inscriptionPanel.add(new JLabel("IP serveur : "), gbc);
+		gbc.gridx = 0;
+	    gbc.gridy = 4;
+	    gbc.gridheight = 1;
+	    gbc.gridwidth = 3;
+		inscriptionPanel.add(txtIP, gbc);
+		
+	    gbc.gridx = 0;
+	    gbc.gridy = 5;
 	    gbc.gridheight = 1;
 	    gbc.gridwidth = 1;
 		inscriptionPanel.add(btnPseudo, gbc);
 
-			
 		// PANEL VENTE
 		mainPanel.setLayout(new GridBagLayout());
-		mainPanel.setPreferredSize(new Dimension(800,400));
-		lblDescriptionObjet.setPreferredSize(new Dimension(500,300));
+		mainPanel.setPreferredSize(new Dimension(400,400));
+		lblDescriptionObjet.setPreferredSize(new Dimension(300,100));
+		lblDescriptionObjet.setEditable(false);
+		lblDescriptionObjet.setLineWrap(true);
 		txtEncherir.setPreferredSize(new Dimension(300,40));
 		btnEncherir.setPreferredSize(new Dimension(100,40));
 		btnEncherir.setFont(fontBtn);
@@ -92,47 +114,63 @@ public class VueClient extends JFrame implements ActionListener{
 		btnSoumettre.setPreferredSize(new Dimension(100,40));
 		btnSoumettre.setFont(fontBtn);
 				
+		int yGrid = 0;
+		
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		
 		//1ere ligne
 		gbc.gridx = 0;
-		gbc.gridy = 0;
+		gbc.gridy = yGrid;
 		gbc.gridheight = 1;
 		gbc.gridwidth = 1;
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		mainPanel.add(lblNomObjet, gbc);
 		
-		gbc.gridx = 2;
+		gbc.gridy = ++yGrid;
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		mainPanel.add(lblPrixObjet, gbc);
 		
-		gbc.gridx = 3;
+		gbc.gridy = ++yGrid;
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		mainPanel.add(lblPseudo, gbc);
 		
-		gbc.gridx = 4;
+		gbc.gridy = ++yGrid;
 		mainPanel.add(lblChrono, gbc);
+		
+//		gbc.anchor = GridBagConstraints.;
 		
 		//2eme ligne
 		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridheight = 2;
-		gbc.gridwidth = 6;
+		gbc.gridy = ++yGrid;
+		gbc.gridheight = 3;
+		gbc.gridwidth = 3;
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		mainPanel.add(lblDescriptionObjet, gbc);
+		yGrid += 2;
 		
 		//3eme ligne
-		gbc.gridy = 3;
+		gbc.gridy = ++yGrid;
+		gbc.gridx = 0;
 		gbc.gridheight = 1;
 		gbc.gridwidth = 3;
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		mainPanel.add(txtEncherir, gbc);
 		
-		gbc.gridx = 4;
+		//4eme ligne
+		gbc.gridy = ++yGrid;
+		gbc.gridx = 0;
 		gbc.gridwidth = 1;
 		mainPanel.add(btnEncherir, gbc);
 		
-		gbc.gridx=5;
+		gbc.gridx=1;
 		gbc.gridwidth=1;
 		mainPanel.add(btnStop, gbc);
 		
-		gbc.gridx=6;
+		gbc.gridx=2;
 		gbc.gridwidth=1;
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		mainPanel.add(btnSoumettre, gbc);
-		
+
 		// Ajout des liaison avec les boutons
 		btnEncherir.addActionListener(this);
 		btnPseudo.addActionListener(this);
@@ -152,17 +190,17 @@ public class VueClient extends JFrame implements ActionListener{
 	
 	public void actualiserObjet() {
 		IObjet objet = currentClient.getCurrentObjet();
-		lblPrixObjet.setText("Prix courant : " + objet.getPrixCourant() + " euros");
+		lblPrixObjet.setText("Prix actuel : " + objet.getPrixCourant() + " euros");
 		lblPseudo.setText("Gagnant : " + objet.getGagnant());
 		lblDescriptionObjet.setText(objet.getDescription());
 		txtEncherir.setText("");
-		
-		if (objet.isDisponible()) {
-			lblNomObjet.setText(objet.getNom() + "(disponible)");
-		}
-		else{
-			lblNomObjet.setText(objet.getNom() + "(vendu)");
-		}
+		lblNomObjet.setText(objet.getNom());
+//		if (objet.isDisponible()) {
+//			lblNomObjet.setText(objet.getNom() + "(disponible)");
+//		}
+//		else{
+//			lblNomObjet.setText(objet.getNom() + "(vendu)");
+//		}
 	}
 	
 	private void setClient(Client client) {
@@ -198,7 +236,7 @@ public class VueClient extends JFrame implements ActionListener{
 		// INSCRIPTION
 		else if(arg0.getSource().equals(btnPseudo)) {
 			try {
-				setClient(new Client(txtPseudo.getText()));
+				setClient(new Client(txtPseudo.getText(), txtIP.getText()));
 				currentClient.inscription();
 				changerGUI(this.mainPanel);
 			} catch (Exception e) {
@@ -248,13 +286,13 @@ public class VueClient extends JFrame implements ActionListener{
 	}
 
 	private void soumettre() {
-		frmSoumettre.setSize(400,300);
+		frmSoumettre.setSize(400,400);
 		JPanel pnlSoumettre = new JPanel(new GridLayout(3,3));
 		frmSoumettre.add(pnlSoumettre);
 		
-		pnlSoumettre.add(new JLabel("Nom de l'objet"));
-		pnlSoumettre.add(new JLabel("Une description de l'objet"));
-		pnlSoumettre.add(new JLabel("Prix initial"));
+		pnlSoumettre.add(new JLabel("Nom : "));
+		pnlSoumettre.add(new JLabel("Description : "));
+		pnlSoumettre.add(new JLabel("Prix initial : "));
 
 		pnlSoumettre.add(txtSoumettreNomObjet);
 		pnlSoumettre.add(txtSoumettreDescriptionObjet);

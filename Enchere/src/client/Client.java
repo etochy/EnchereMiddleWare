@@ -11,8 +11,8 @@ import serveur.Objet;
 public class Client extends UnicastRemoteObject implements IAcheteur {
 
 	private static final long serialVersionUID = 1L;
-	private static final String adresseServeur = "localhost:8090/enchere";
-
+	
+	private String adresseServeur;
 	private String pseudo;
 	private VueClient vue;
 	private IVente serveur;
@@ -20,15 +20,16 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 	private EtatClient etat = EtatClient.ATTENTE;
 	private Chrono chrono = new Chrono(30000, this); // Chrono de 30sc
 
-	public Client(String pseudo) throws RemoteException {
+	public Client(String pseudo, String ip) throws RemoteException {
 		super();
 		this.chrono.start();
 		this.pseudo = pseudo;
+		this.setAdresseServeur(ip);
 		this.serveur = connexionServeur();
 		this.currentObjet = serveur.getObjet();
 	}
 
-	public static IVente connexionServeur() {
+	public IVente connexionServeur() {
 		try {
 			IVente serveur = (IVente) Naming.lookup("//" + adresseServeur);
 			System.out.println("Connexion au serveur " + adresseServeur + " reussi.");
@@ -140,9 +141,17 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 	public String getPseudo() throws RemoteException {
 		return pseudo;
 	}
-
+	
 	public void updateChrono(){
 		this.vue.updateChrono(this.chrono.getTemps(), this.chrono.getTempsFin());
+	}
+
+	public String getAdresseServeur() {
+		return adresseServeur;
+	}
+
+	public void setAdresseServeur(String adresseServeur) {
+		this.adresseServeur = adresseServeur;
 	}
 
 }
