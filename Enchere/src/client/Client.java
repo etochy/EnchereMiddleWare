@@ -6,7 +6,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 import serveur.IObjet;
 import serveur.IVente;
-import serveur.Objet;
+//import serveur.Objet;
 
 public class Client extends UnicastRemoteObject implements IAcheteur {
 
@@ -94,9 +94,10 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 	}
 	
 	public void nouvelleSoumission(String nom, String description, int prix) {
-		IObjet nouveau = new Objet(nom, description, prix);
+//		IObjet nouveau = new Objet(nom, description, prix);
 		try {
-			serveur.ajouterObjet(nouveau);
+//			serveur.ajouterObjet(nouveau);
+			serveur.ajouterObjet(nom, description, prix);
 			System.out.println("Soumission de l'objet " + nom + " au serveur.");
 		} catch (RemoteException e) {
 			e.printStackTrace();

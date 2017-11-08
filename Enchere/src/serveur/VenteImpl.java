@@ -174,16 +174,25 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 
 
+//	@Override
+//	public void ajouterObjet(IObjet objet) throws RemoteException {
+//		try {
+//			this.listeObjets.push((Objet) objet);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//
+//	}
 	@Override
-	public void ajouterObjet(IObjet objet) throws RemoteException {
+	public void ajouterObjet(String nom, String description, int prix) throws RemoteException {
 		try {
-			this.listeObjets.push((Objet) objet);
+			this.listeObjets.push(new Objet(nom, description, prix));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-	}
-
+	}	
+	
 	@Override
 	public IObjet getObjet() throws RemoteException {
 		return this.objetCourant;
