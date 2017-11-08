@@ -31,11 +31,13 @@ public class VueClient extends JFrame implements ActionListener{
 	
 	private JLabel lblPrixObjet = new JLabel();
 	private JLabel lblNomObjet = new JLabel();
-	private JTextArea lblDescriptionObjet = new JTextArea(3,1);
 	private JLabel lblPseudo = new JLabel();
 	private JLabel lblEncherir = new JLabel();
 	private JLabel lblChrono = new JLabel("chrono");
 
+	private JTextArea lblDescriptionObjet = new JTextArea(3,1);
+	private JTextArea logs = new JTextArea();
+	
 	private JButton btnEncherir = new JButton("Encherir");
 	private JButton btnPseudo = new JButton("Inscription");
 	private JButton btnSoumettre = new JButton("Soumettre une enchere");
@@ -59,7 +61,7 @@ public class VueClient extends JFrame implements ActionListener{
 		super();
 
 		//Definition de la fenetre
-		this.setSize(400,400);
+		this.setSize(550,400);
 		this.setTitle("Vente aux encheres");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Font fontBtn = new Font("Serif", Font.PLAIN, 10);
@@ -99,27 +101,40 @@ public class VueClient extends JFrame implements ActionListener{
 	    gbc.gridheight = 1;
 	    gbc.gridwidth = 1;
 		inscriptionPanel.add(btnPseudo, gbc);
-
+		
+		
+		
 		// PANEL VENTE
 		mainPanel.setLayout(new GridBagLayout());
-		mainPanel.setPreferredSize(new Dimension(400,400));
-		lblDescriptionObjet.setPreferredSize(new Dimension(300,100));
+		mainPanel.setPreferredSize(new Dimension(550,400));
+		lblDescriptionObjet.setPreferredSize(new Dimension(200,100));
 		lblDescriptionObjet.setEditable(false);
 		lblDescriptionObjet.setLineWrap(true);
-		txtEncherir.setPreferredSize(new Dimension(300,40));
+		txtEncherir.setPreferredSize(new Dimension(200,40));
 		btnEncherir.setPreferredSize(new Dimension(100,40));
 		btnEncherir.setFont(fontBtn);
 		btnStop.setPreferredSize(new Dimension(100,40));
 		btnStop.setFont(fontBtn);
 		btnSoumettre.setPreferredSize(new Dimension(100,40));
 		btnSoumettre.setFont(fontBtn);
-				
-		int yGrid = 0;
+		logs.setPreferredSize(new Dimension(200,250));
+		logs.setEditable(false);
+		logs.setLineWrap(true);
+		
+		int yGrid = 0, xGrid = 0;
 		
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		
+		//LOGS
+		gbc.gridx = xGrid;
+		gbc.gridy = yGrid;
+		gbc.gridheight = 9;
+		gbc.gridwidth = 2;
+		mainPanel.add(logs, gbc);
+		
 		//1ere ligne
-		gbc.gridx = 0;
+		xGrid += 3;
+		gbc.gridx = ++xGrid;
 		gbc.gridy = yGrid;
 		gbc.gridheight = 1;
 		gbc.gridwidth = 1;
@@ -137,10 +152,8 @@ public class VueClient extends JFrame implements ActionListener{
 		gbc.gridy = ++yGrid;
 		mainPanel.add(lblChrono, gbc);
 		
-//		gbc.anchor = GridBagConstraints.;
-		
 		//2eme ligne
-		gbc.gridx = 0;
+		gbc.gridx = xGrid;
 		gbc.gridy = ++yGrid;
 		gbc.gridheight = 3;
 		gbc.gridwidth = 3;
@@ -150,7 +163,7 @@ public class VueClient extends JFrame implements ActionListener{
 		
 		//3eme ligne
 		gbc.gridy = ++yGrid;
-		gbc.gridx = 0;
+		gbc.gridx = xGrid;
 		gbc.gridheight = 1;
 		gbc.gridwidth = 3;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -158,15 +171,15 @@ public class VueClient extends JFrame implements ActionListener{
 		
 		//4eme ligne
 		gbc.gridy = ++yGrid;
-		gbc.gridx = 0;
+		gbc.gridx = xGrid;
 		gbc.gridwidth = 1;
 		mainPanel.add(btnEncherir, gbc);
 		
-		gbc.gridx=1;
+		gbc.gridx= ++xGrid;
 		gbc.gridwidth=1;
 		mainPanel.add(btnStop, gbc);
 		
-		gbc.gridx=2;
+		gbc.gridx= ++xGrid;
 		gbc.gridwidth=1;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		mainPanel.add(btnSoumettre, gbc);
@@ -177,7 +190,7 @@ public class VueClient extends JFrame implements ActionListener{
 		btnSoumettre.addActionListener(this);
 		btnSoumettreObjet.addActionListener(this);
 		btnStop.addActionListener(this);
-
+		
 		this.setContentPane(inscriptionPanel);
 		this.setVisible(true);
 	}
@@ -274,6 +287,7 @@ public class VueClient extends JFrame implements ActionListener{
 		this.getContentPane().revalidate();
 		this.getContentPane().repaint();
 	}
+	
 	
 	public void attente(){
 		this.btnEncherir.setEnabled(false);
