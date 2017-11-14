@@ -1,4 +1,4 @@
-package serveur;
+package com.alma.main;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -10,7 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import client.IAcheteur;
+import com.alma.api.IAcheteur;
+import com.alma.api.IObjet;
+import com.alma.api.IVente;
 
 public class VenteImpl extends UnicastRemoteObject implements IVente{
 
@@ -37,8 +39,6 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		this.etatVente = EtatVente.ATTENTE;
 	}
 
-
-	@Override
 	public synchronized boolean inscriptionAcheteur(String login, IAcheteur acheteur) throws Exception{
 		for(IAcheteur each : listeAcheteurs){
 			if(each.getPseudo().equals(login) || each.getPseudo().equals(acheteur.getPseudo())){
@@ -60,8 +60,6 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		return false;
 	}
 
-
-	@Override
 	public synchronized int rencherir(int nouveauPrix, IAcheteur acheteur) throws Exception{
 		this.enchereTemp.put(acheteur, nouveauPrix);
 		System.out.println(this.enchereTemp.size()+"/"+this.listeAcheteurs.size());
@@ -183,7 +181,6 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 //		}
 //
 //	}
-	@Override
 	public void ajouterObjet(String nom, String description, int prix) throws RemoteException {
 		try {
 			this.listeObjets.push(new Objet(nom, description, prix));
@@ -193,7 +190,6 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 	}	
 	
-	@Override
 	public IObjet getObjet() throws RemoteException {
 		return this.objetCourant;
 	}

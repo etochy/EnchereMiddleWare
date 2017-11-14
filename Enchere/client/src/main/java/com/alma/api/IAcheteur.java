@@ -1,4 +1,4 @@
-package client;
+package com.alma.api;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

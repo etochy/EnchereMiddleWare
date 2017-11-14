@@ -1,9 +1,7 @@
-package serveur;
+package com.alma.api;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-
-import client.IAcheteur;
 
 public interface IVente extends Remote {
 

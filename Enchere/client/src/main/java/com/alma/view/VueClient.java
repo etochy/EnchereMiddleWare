@@ -1,4 +1,4 @@
-package client;
+package com.alma.view;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -16,14 +16,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import serveur.IObjet;
+import com.alma.api.IObjet;
+import com.alma.control.Acheteur;
 
 public class VueClient extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 9070911591784925769L;
 	
 	// Informations sur de l'Etat de la vente
-	private Client currentClient;
+	private Acheteur currentClient;
 	
 	// Elements SWING
 	private JPanel mainPanel = new JPanel();
@@ -53,10 +54,13 @@ public class VueClient extends JFrame implements ActionListener{
 	
 	private JFrame frmSoumettre = new JFrame("Soumettre une enchere");
 
-	public JLabel getLblEncherir() {
-		return lblEncherir;
-	}
-
+	// CONSTRUCTOR
+	
+	/**
+	 * Constructeur
+	 * 
+	 * @throws Exception
+	 */
 	public VueClient() throws Exception {
 		super();
 
@@ -195,12 +199,18 @@ public class VueClient extends JFrame implements ActionListener{
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Actualise le prix courant sur la vue
+	 */
 	public void actualiserPrix() {
 		lblPrixObjet.setText("Prix courant : " + currentClient.getCurrentObjet().getPrixCourant() + " euros");
 		lblPseudo.setText("Gagnant : " + this.currentClient.getCurrentObjet().getGagnant());
 		txtEncherir.setText("");
 	}
 	
+	/**
+	 * 
+	 */
 	public void actualiserObjet() {
 		IObjet objet = currentClient.getCurrentObjet();
 		lblPrixObjet.setText("Prix actuel : " + objet.getPrixCourant() + " euros");
@@ -216,14 +226,12 @@ public class VueClient extends JFrame implements ActionListener{
 //		}
 	}
 	
-	private void setClient(Client client) {
+	private void setClient(Acheteur client) {
 		currentClient = client;
 		client.setVue(this);
 	}
 	
-	
-	
-	@Override
+		
 	public synchronized void actionPerformed(ActionEvent arg0) {
 		// ENCHERIR			
 		if(arg0.getSource().equals(this.btnEncherir)){
@@ -249,7 +257,7 @@ public class VueClient extends JFrame implements ActionListener{
 		// INSCRIPTION
 		else if(arg0.getSource().equals(btnPseudo)) {
 			try {
-				setClient(new Client(txtPseudo.getText(), txtIP.getText()));
+				setClient(new Acheteur(txtPseudo.getText(), txtIP.getText()));
 				currentClient.inscription();
 				changerGUI(this.mainPanel);
 			} catch (Exception e) {
@@ -329,5 +337,8 @@ public class VueClient extends JFrame implements ActionListener{
 		this.lblChrono.setText("Chrono : "+ temps+"/"+tempsMax);
 	}
 
+	public JLabel getLblEncherir() {
+		return lblEncherir;
+	}
 
 }

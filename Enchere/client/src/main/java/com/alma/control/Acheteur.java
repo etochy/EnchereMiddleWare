@@ -1,14 +1,17 @@
-package client;
+package com.alma.control;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import serveur.IObjet;
-import serveur.IVente;
-//import serveur.Objet;
+import com.alma.api.IAcheteur;
+import com.alma.api.IObjet;
+import com.alma.api.IVente;
+import com.alma.data.Chrono;
+import com.alma.data.EtatClient;
+import com.alma.view.VueClient;
 
-public class Client extends UnicastRemoteObject implements IAcheteur {
+public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -20,7 +23,7 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 	private EtatClient etat = EtatClient.ATTENTE;
 	private Chrono chrono = new Chrono(30000, this); // Chrono de 30sc
 
-	public Client(String pseudo, String ip) throws RemoteException {
+	public Acheteur(String pseudo, String ip) throws RemoteException {
 		super();
 		this.chrono.start();
 		this.pseudo = pseudo;
@@ -29,7 +32,7 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 		this.currentObjet = serveur.getObjet();
 	}
 
-	public IVente connexionServeur() {
+	private IVente connexionServeur() {
 		try {
 			IVente serveur = (IVente) Naming.lookup("//" + adresseServeur);
 			System.out.println("Connexion au serveur " + adresseServeur + " reussi.");
@@ -58,7 +61,7 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 		}
 	}
 
-	@Override
+	// REMOTE
 	public void objetVendu(String gagnant) throws RemoteException {
 		this.currentObjet = serveur.getObjet();
 		this.vue.actualiserObjet();
@@ -71,8 +74,8 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 			this.chrono.demarrer();
 		}
 	}
-
-	@Override
+	
+	// REMOTE
 	public void nouveauPrix(int prix, IAcheteur gagnant) throws RemoteException {
 		try {
 			this.currentObjet.setPrixCourant(prix);
@@ -87,7 +90,7 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 
 	}
 	
-	@Override
+	// REMOTE
 	public void finEnchere() throws RemoteException {
 		this.etat = EtatClient.TERMINE;
 		System.exit(0);
@@ -104,20 +107,12 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 		}
 	}
 
-	public static void main(String[] argv) {
-		try {
-			new VueClient();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	// getters and setters
 	public IObjet getCurrentObjet() {
 		return currentObjet;
 	}
 
-	@Override
+	// REMOTE
 	public long getChrono() {
 		return chrono.getTemps();
 	}
@@ -138,7 +133,7 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 		return this.etat;
 	}
 	
-	@Override
+	// REMOTE
 	public String getPseudo() throws RemoteException {
 		return pseudo;
 	}

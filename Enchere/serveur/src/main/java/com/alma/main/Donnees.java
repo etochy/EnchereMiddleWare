@@ -1,6 +1,8 @@
-package serveur;
+package com.alma.main;
 
 import java.util.Stack;
+
+import com.alma.api.IObjet;
 
 
 public class Donnees {
