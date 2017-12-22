@@ -73,6 +73,7 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	
 	// REMOTE, appelée lorsqu'un nouveau participant arrive mais qu'aucune enchère n'est en cours.
 	public void nouveauParticipant() {
+		this.vue.attente();
 		this.etat = EtatClient.ATTENTE;
 	}
 	
