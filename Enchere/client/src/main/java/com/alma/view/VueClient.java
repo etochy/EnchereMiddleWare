@@ -232,6 +232,11 @@ public class VueClient extends JFrame implements ActionListener{
 	private void setClient(Acheteur client) {
 		currentClient = client;
 		client.setVue(this);
+		try {
+			this.setTitle("Vente aux enchères - " + currentClient.getPseudo().toString());
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 	
 		

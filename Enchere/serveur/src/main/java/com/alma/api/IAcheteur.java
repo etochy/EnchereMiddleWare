@@ -12,6 +12,10 @@ public interface IAcheteur extends Remote {
 	 * @throws RemoteException
 	 */
 	public void objetVendu(String gagnant, int prix, String descObj, String objNom) throws RemoteException;
+	
+	public void nouveauParticipant() throws RemoteException;
+
+	public void nouveauParticipant(String gagnant, int prix, String descObj, String objNom) throws RemoteException;
 
 	public void nouveauPrix(int prix, IAcheteur gagnant) throws RemoteException;
 	

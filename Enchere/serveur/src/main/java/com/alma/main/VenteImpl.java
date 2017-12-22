@@ -48,7 +48,8 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 			for(IAcheteur each : this.fileAttente){
 				this.listeAcheteurs.add(each);
-				each.objetVendu("", objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
+				if(objetCourant == null) each.nouveauParticipant();
+				else each.nouveauParticipant(acheteurCourant.getPseudo(), objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
 			}
 			this.fileAttente.clear();
 			return true;

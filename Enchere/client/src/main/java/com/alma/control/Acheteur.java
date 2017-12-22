@@ -65,16 +65,23 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	// REMOTE, appelé quand un objet est vendu
 	// Le serveur appelle la méthode avec les bons paramètres
 	public void objetVendu(String gagnant, int prix, String descObj, String objNom) throws RemoteException {
-		
 		this.vue.actualiserObjet(prix, gagnant, descObj, objNom);
 		this.vue.reprise();
-		
-		if (!gagnant.equals("")) { 			//Fin de l'objet
-			this.etat = EtatClient.ATTENTE;
-		}else{ 								//inscription & objet suivant
-			this.etat = EtatClient.RENCHERI;
-			this.chrono.demarrer();
-		}
+		this.etat = EtatClient.RENCHERI;
+		this.chrono.demarrer();
+	}
+	
+	// REMOTE, appelée lorsqu'un nouveau participant arrive mais qu'aucune enchère n'est en cours.
+	public void nouveauParticipant() {
+		this.etat = EtatClient.ATTENTE;
+	}
+	
+	// REMOTE, appelée lorsqu'un nouveau participant arrive et qu'une enchère est en cours.
+	public void nouveauParticipant(String gagnant, int prix, String descObj, String objNom) {
+		this.vue.actualiserObjet(prix, gagnant, descObj, objNom);
+		this.vue.reprise();
+		this.etat = EtatClient.RENCHERI;
+		this.chrono.demarrer();
 	}
 	
 	// REMOTE, appelé quand une nouvelle enchère survient
