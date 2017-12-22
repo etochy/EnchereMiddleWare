@@ -170,7 +170,17 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		try {
 			Objet newObj = new Objet(nom, description, prix);
 			this.listeObjets.add(newObj);
-			if(objetCourant == null) this.objetCourant = listeObjets.pop();
+			if(objetCourant == null) {
+				this.objetCourant = listeObjets.pop();
+				
+				// TODO : Contacter tous les acheteurs pour les informer qu'une enchère débute.
+				
+				this.objetCourant.setGagnant("");
+				this.etatVente = EtatVente.ENCHERISSEMENT;
+				for(IAcheteur each : this.listeAcheteurs){
+					each.objetVendu("", objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
