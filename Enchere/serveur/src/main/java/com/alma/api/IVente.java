@@ -11,7 +11,7 @@ public interface IVente extends Remote {
 	 * @param acheteur
 	 * @throws RemoteException
 	 */
-	public boolean inscriptionAcheteur(String login, IAcheteur acheteur) throws RemoteException, Exception;
+	public boolean inscriptionAcheteur(String login, IAcheteur acheteur, int salle) throws RemoteException, Exception;
 	
 	/**
 	 * Augmente le prix de l'objet a vendre.
@@ -20,7 +20,7 @@ public interface IVente extends Remote {
 	 * @return le nouveau prix de l'objet a vendre
 	 * @throws RemoteException
 	 */
-	public int rencherir(int nouveauPrix, IAcheteur acheteur) throws RemoteException, Exception;
+	public int rencherir(int nouveauPrix, IAcheteur acheteur, int salle) throws RemoteException, Exception;
 	
 
 	/**
@@ -28,13 +28,13 @@ public interface IVente extends Remote {
 	 * @param nouveau l'objet a vendre.
 	 * @throws RemoteException
 	 */
-	public void ajouterObjet(String nom, String description, int prix) throws RemoteException;
+	public void ajouterObjet(String nom, String description, int prix, int salle) throws RemoteException;
 	
-	public int getPrixCourant() throws RemoteException;
+	public int getPrixCourant(int salle) throws RemoteException;
 	
-	public String getGagnantEnchere() throws RemoteException;
+	public String getGagnantEnchere(int salle) throws RemoteException;
 	
-	public IObjet getObjet() throws RemoteException;
+	public IObjet getObjet(int salle) throws RemoteException;
 
 
 }

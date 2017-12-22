@@ -19,62 +19,68 @@ import com.alma.api.IVente;
 public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 	private static final long serialVersionUID = 1L;
-	private List<IAcheteur> listeAcheteurs = new ArrayList<IAcheteur>();
-	private List<IAcheteur> fileAttente = new ArrayList<IAcheteur>();
-	private Map<IAcheteur, Integer> enchereTemp = new HashMap<IAcheteur, Integer>();
-	private IObjet objetCourant;
-	private Stack<Objet> listeObjets;
-	private IAcheteur acheteurCourant;
-	private EtatVente etatVente;
+	private List<Pair<List<IAcheteur>, List<IAcheteur>>> salles; // listeAcheteurs - fileAttente
+//	private List<IAcheteur> listeAcheteurs = new ArrayList<IAcheteur>();
+//	private List<IAcheteur> fileAttente = new ArrayList<IAcheteur>();
+	private List<Map<IAcheteur, Integer>> enchereTemp = new ArrayList<Map<IAcheteur, Integer>>();
+	private List<Objet> objetCourant = new ArrayList<Objet>();
+	private List<Stack<Objet>> listeObjets= new ArrayList<Stack<Objet>>();
+	private List<IAcheteur> acheteurCourant= new ArrayList<IAcheteur>();
+	private List<EtatVente> etatVente= new ArrayList<EtatVente>();
 	private final int clientMin = 2;
 
 
 	protected VenteImpl() throws RemoteException {
 		super();
-		listeObjets = new Stack<Objet>();
-		this.etatVente = EtatVente.ATTENTE;
+		//init all variables
+		for (int i = 0; i < 10 ; ++i) {
+			this.listeObjets.add(new Stack<Objet>());
+			this.etatVente.add(EtatVente.ATTENTE);
+			this.enchereTemp.add(new HashMap<IAcheteur, Integer>());
+		}
 	}
 
-	public synchronized boolean inscriptionAcheteur(String login, IAcheteur acheteur) throws Exception{
-		for(IAcheteur each : listeAcheteurs){
+	public synchronized boolean inscriptionAcheteur(String login, IAcheteur acheteur, int salle) throws Exception{
+		for(IAcheteur each : salles.get(salle).getFirst()){ //listeAcheteurs
 			if(each.getPseudo().equals(login) || each.getPseudo().equals(acheteur.getPseudo())){
 				throw new Exception("Login deja pris");
 			}
 		}			
-		this.fileAttente.add(acheteur);
+		this.salles.get(salle).getSecond().add(acheteur);
 
-		if(this.fileAttente.size() >= clientMin && this.etatVente == EtatVente.ATTENTE){
-			this.etatVente = EtatVente.ENCHERISSEMENT;	
+		if(this.salles.get(salle).getSecond().size() >= clientMin && this.etatVente.get(salle) == EtatVente.ATTENTE){
+//			this.etatVente = EtatVente.ENCHERISSEMENT;	
+			this.etatVente.set(salle, EtatVente.ENCHERISSEMENT);
 
-			for(IAcheteur each : this.fileAttente){
-				this.listeAcheteurs.add(each);
+			for(IAcheteur each : this.salles.get(salle).getSecond()){
+				this.salles.get(salle).getFirst().add(each);
 				if(objetCourant == null) each.nouveauParticipant();
-				else each.nouveauParticipant(acheteurCourant.getPseudo(), objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
+				else each.nouveauParticipant(acheteurCourant.get(salle).getPseudo(), objetCourant.get(salle).getPrixCourant(), objetCourant.get(salle).getDescription(), objetCourant.get(salle).getNom());
 			}
-			this.fileAttente.clear();
+			this.salles.get(salle).getSecond().clear();
 			return true;
 		}	
 		return false;
 	}
 
-	public synchronized int rencherir(int nouveauPrix, IAcheteur acheteur) throws Exception{
-		this.enchereTemp.put(acheteur, nouveauPrix);
-		System.out.println(this.enchereTemp.size()+"/"+this.listeAcheteurs.size());
+	public synchronized int rencherir(int nouveauPrix, IAcheteur acheteur, int salle) throws Exception{
+		this.enchereTemp.get(salle).put(acheteur, nouveauPrix);
+		System.out.println(this.enchereTemp.size()+"/"+this.salles.get(salle).getFirst().size());
 
 		//On a recu toutes les encheres
-		if(this.enchereTemp.size() == this.listeAcheteurs.size()){
-			if(enchereFinie()){
-				return objetSuivant();
+		if(this.enchereTemp.size() == this.salles.get(salle).getFirst().size()){
+			if(enchereFinie(salle)){
+				return objetSuivant(salle);
 			}
 			else{
-				actualiserObjet();
+				actualiserObjet(salle);
 				//On renvoie le resultat du tour
-				for(IAcheteur each : this.listeAcheteurs){
-					each.nouveauPrix(this.objetCourant.getPrixCourant(), this.acheteurCourant);
+				for(IAcheteur each : this.salles.get(salle).getFirst()){
+					each.nouveauPrix(this.objetCourant.get(salle).getPrixCourant(), this.acheteurCourant.get(salle));
 				}
 			}
 		}
-		return objetCourant.getPrixCourant();
+		return objetCourant.get(salle).getPrixCourant();
 	}
 
 
@@ -83,17 +89,17 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 	 * @throws RemoteException
 	 * @throws InterruptedException
 	 */
-	public int objetSuivant() throws RemoteException, InterruptedException{
+	public int objetSuivant(int salle) throws RemoteException, InterruptedException{
 		this.enchereTemp.clear();
-		this.etatVente = EtatVente.ATTENTE;
+		this.etatVente.set(salle, EtatVente.ATTENTE);
 
 		if(acheteurCourant != null){
-			this.objetCourant.setDisponible(false);
-			this.objetCourant.setGagnant(this.acheteurCourant.getPseudo());
+			this.objetCourant.get(salle).setDisponible(false);
+			this.objetCourant.get(salle).setGagnant(this.acheteurCourant.get(salle).getPseudo());
 
 			//Envoie des resultats finaux pour l'objet courant
-			for(IAcheteur each : this.listeAcheteurs){
-				each.objetVendu(this.acheteurCourant.getPseudo(), objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
+			for(IAcheteur each : this.salles.get(salle).getFirst()){
+				each.objetVendu(this.acheteurCourant.get(salle).getPseudo(), objetCourant.get(salle).getPrixCourant(), objetCourant.get(salle).getDescription(), objetCourant.get(salle).getNom());
 			}
 		}
 
@@ -102,25 +108,27 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		Thread.sleep(5000);
 		
 		this.acheteurCourant = null;
-		this.listeAcheteurs.addAll(this.fileAttente);
-		this.fileAttente.clear();
+		this.salles.get(salle).getFirst().addAll(this.salles.get(salle).getSecond());
+//		this.listeAcheteurs.addAll(this.fileAttente);
+//		this.fileAttente.clear();
+		this.salles.get(salle).getSecond().clear();
 
 		//Il y a encore des objets à vendre
-		if(!this.listeObjets.isEmpty()){
-			this.objetCourant = this.listeObjets.pop();
-			this.objetCourant.setGagnant("");
-			this.etatVente = EtatVente.ENCHERISSEMENT;
-			for(IAcheteur each : this.listeAcheteurs){
-				each.objetVendu("", objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
+		if(!this.listeObjets.get(salle).isEmpty()){
+			this.objetCourant.set(salle, this.listeObjets.get(salle).pop());
+			this.objetCourant.get(salle).setGagnant("");
+			this.etatVente.set(salle, EtatVente.ENCHERISSEMENT);
+			for(IAcheteur each : this.salles.get(salle).getFirst()){
+				each.objetVendu("", objetCourant.get(salle).getPrixCourant(), objetCourant.get(salle).getDescription(), objetCourant.get(salle).getNom());
 			}
 		} else{
-			this.etatVente = EtatVente.TERMINE;
-			for(IAcheteur each : this.listeAcheteurs){
+			this.etatVente.set(salle, EtatVente.TERMINE);
+			for(IAcheteur each : this.salles.get(salle).getFirst()){
 				each.finEnchere();
 			}
 			return 0;
 		}
-		return this.objetCourant.getPrixBase();
+		return this.objetCourant.get(salle).getPrixBase();
 	}
 
 
@@ -129,18 +137,18 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 	 * Methode utilitaire permettant d'actualiser le prix de l'objet et le gagnant selon les encheres recues.
 	 * @throws RemoteException
 	 */
-	public void actualiserObjet() throws RemoteException{
-		Set<IAcheteur> cles = this.enchereTemp.keySet();
+	public void actualiserObjet(int salle) throws RemoteException{
+		Set<IAcheteur> cles = this.enchereTemp.get(salle).keySet();
 		Iterator<IAcheteur> it = cles.iterator();
 
 		while (it.hasNext()){
 			IAcheteur cle = it.next();
-			Integer valeur = this.enchereTemp.get(cle);
+			Integer valeur = this.enchereTemp.get(salle).get(cle);
 
-			if(valeur > this.objetCourant.getPrixCourant() || (valeur == this.objetCourant.getPrixCourant() && cle.getChrono() < acheteurCourant.getChrono())){
-				this.objetCourant.setPrixCourant(valeur);
-				this.acheteurCourant = cle;	
-				this.objetCourant.setGagnant(this.acheteurCourant.getPseudo());
+			if(valeur > this.objetCourant.get(salle).getPrixCourant() || (valeur == this.objetCourant.get(salle).getPrixCourant() && cle.getChrono() < acheteurCourant.get(salle).getChrono())){
+				this.objetCourant.get(salle).setPrixCourant(valeur);
+				this.acheteurCourant.set(salle, cle);	
+				this.objetCourant.get(salle).setGagnant(this.acheteurCourant.get(salle).getPseudo());
 			}
 		}
 		this.enchereTemp.clear();
@@ -151,13 +159,13 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 	 * méthode utilitaire qui permet de savoir si les encheres sont finis.
 	 * @return true si on a reçu que des -1, donc si l'enchere est finie, sinon false.
 	 */
-	public boolean enchereFinie(){	
-		Set<IAcheteur> cles = this.enchereTemp.keySet();
+	public boolean enchereFinie(int salle){	
+		Set<IAcheteur> cles = this.enchereTemp.get(salle).keySet();
 		Iterator<IAcheteur> it = cles.iterator();
 
 		while (it.hasNext()){
 			IAcheteur cle = it.next();
-			Integer valeur = this.enchereTemp.get(cle);
+			Integer valeur = this.enchereTemp.get(salle).get(cle);
 
 			if(valeur != -1){
 				return false;	
@@ -166,19 +174,19 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		return true;
 	}
 
-	public void ajouterObjet(String nom, String description, int prix) throws RemoteException {
+	public void ajouterObjet(String nom, String description, int prix, int salle) throws RemoteException {
 		try {
 			Objet newObj = new Objet(nom, description, prix);
-			this.listeObjets.add(newObj);
+			this.listeObjets.get(salle).add(newObj);
 			if(objetCourant == null) {
-				this.objetCourant = listeObjets.pop();
+				this.objetCourant.set(salle, listeObjets.get(salle).pop());
 				
 				// TODO : Contacter tous les acheteurs pour les informer qu'une enchère débute.
 				
-				this.objetCourant.setGagnant("");
-				this.etatVente = EtatVente.ENCHERISSEMENT;
-				for(IAcheteur each : this.listeAcheteurs){
-					each.objetVendu("", objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
+				this.objetCourant.get(salle).setGagnant("");
+				this.etatVente.set(salle, EtatVente.ENCHERISSEMENT);
+				for(IAcheteur each : this.salles.get(salle).getFirst()){
+					each.objetVendu("", objetCourant.get(salle).getPrixCourant(), objetCourant.get(salle).getDescription(), objetCourant.get(salle).getNom());
 				}
 			}
 		} catch (Exception e) {
@@ -187,60 +195,60 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 	}	
 	
-	public IObjet getObjet() throws RemoteException {
-		return this.objetCourant;
+	public IObjet getObjet(int salle) throws RemoteException {
+		return this.objetCourant.get(salle);
 	}
 
-	public List<IAcheteur> getListeAcheteurs() {
-		return listeAcheteurs;
+	public List<IAcheteur> getListeAcheteurs(int salle) {
+		return this.salles.get(salle).getFirst();
 	}
 
-	public void setListeAcheteurs(List<IAcheteur> listeAcheteurs) {
-		this.listeAcheteurs = listeAcheteurs;
+	public void setListeAcheteurs(List<IAcheteur> listeAcheteurs,int salle) {
+		this.salles.get(salle).setFirst(listeAcheteurs);
 	}
 
-	public IObjet getObjetCourant() {
-		return objetCourant;
+	public IObjet getObjetCourant(int salle) {
+		return objetCourant.get(salle);
 	}
 
-	public void setObjetCourant(IObjet objetCourant) {
-		this.objetCourant = objetCourant;
+	public void setObjetCourant(IObjet objetCourant,int salle) {
+		this.objetCourant.set(salle, (Objet) objetCourant);
 	}
 
-	public Stack<Objet> getListeObjets() {
-		return listeObjets;
+	public Stack<Objet> getListeObjets(int salle) {
+		return listeObjets.get(salle);
 	}
 
-	public void setListeObjets(Stack<Objet> listeObjets) {
-		this.listeObjets = listeObjets;
+	public void setListeObjets(Stack<Objet> listeObjets,int salle) {
+		this.listeObjets.set(salle, listeObjets);
 	}
 
-	public IAcheteur getAcheteurCourant() {
-		return acheteurCourant;
+	public IAcheteur getAcheteurCourant(int salle) {
+		return acheteurCourant.get(salle);
 	}
 
-	public void setAcheteurCourant(IAcheteur acheteurCourant) {
-		this.acheteurCourant = acheteurCourant;
+	public void setAcheteurCourant(IAcheteur acheteurCourant,int salle) {
+		this.acheteurCourant.set(salle, acheteurCourant);
 	}
 
-	public EtatVente getEtatVente() {
-		return etatVente;
+	public EtatVente getEtatVente(int salle) {
+		return etatVente.get(salle);
 	}
 
-	public void setEtatVente(EtatVente etatVente) {
-		this.etatVente = etatVente;
+	public void setEtatVente(EtatVente etatVente,int salle) {
+		this.etatVente.set(salle, etatVente);
 	}
 	
 	// REMOTE GETTERS
 	
 	@Override
-	public int getPrixCourant() throws RemoteException {
-		return this.objetCourant.getPrixCourant();
+	public int getPrixCourant(int salle) throws RemoteException {
+		return this.objetCourant.get(salle).getPrixCourant();
 	}
 
 	@Override
-	public String getGagnantEnchere() throws RemoteException {
-		return this.objetCourant.getGagnant();
+	public String getGagnantEnchere(int salle) throws RemoteException {
+		return this.objetCourant.get(salle).getGagnant();
 	}
 	
 }

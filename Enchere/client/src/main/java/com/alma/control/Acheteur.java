@@ -14,6 +14,7 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 
 	private static final long serialVersionUID = 1L;
 	
+	private int salle;
 	private String adresseServeur;
 	private String pseudo;
 	private VueClient vue;
@@ -42,7 +43,7 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	}
 
 	public void inscription() throws Exception {
-		if(!serveur.inscriptionAcheteur(pseudo, this)){
+		if(!serveur.inscriptionAcheteur(pseudo, this,salle)){
 			this.vue.attente();
 		}
 	}
@@ -51,13 +52,13 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 		
 		// TODO : Coder getPrixCourant()
 		
-		if (prix <= this.serveur.getPrixCourant() && prix != -1) {
+		if (prix <= this.serveur.getPrixCourant(salle) && prix != -1) {
 			System.out.println("Prix trop bas, ne soyez pas radin !");
 		} else if (etat == EtatClient.RENCHERI) {
 			chrono.arreter();
 			vue.attente();
 			etat = EtatClient.ATTENTE;
-			serveur.rencherir(prix, this);
+			serveur.rencherir(prix, this,salle);
 		}
 	}
 
@@ -108,7 +109,7 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	
 	public void nouvelleSoumission(String nom, String description, int prix) {
 		try {
-			serveur.ajouterObjet(nom, description, prix);
+			serveur.ajouterObjet(nom, description, prix,salle);
 			System.out.println("Soumission de l'objet " + nom + " au serveur.");
 		} catch (RemoteException e) {
 			e.printStackTrace();

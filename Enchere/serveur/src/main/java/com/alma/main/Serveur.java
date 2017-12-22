@@ -27,9 +27,10 @@ public class Serveur{
 			while(true){
 
 				//On recrée une nouvelle vente
-				if(vente.getEtatVente() == EtatVente.TERMINE){
-					//TODO : Recréer correctement les ventes ?
-				}
+				for (int i=0; i<10; ++i)
+					if(vente.getEtatVente(i) == EtatVente.TERMINE){
+						//TODO : Recréer correctement les ventes ?
+					}
 
 			}
 

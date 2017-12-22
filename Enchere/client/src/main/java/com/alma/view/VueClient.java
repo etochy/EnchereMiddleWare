@@ -46,6 +46,7 @@ public class VueClient extends JFrame implements ActionListener{
 	private JButton btnStop = new JButton("Passer");
 	
 	private JTextField txtEncherir = new JTextField();
+	private JTextField txtSalle = new JTextField("0");
 	private JTextField txtPseudo = new JTextField();
 	private JTextField txtIP = new JTextField("localhost:8090/enchere");
 	private JTextField txtSoumettreNomObjet = new JTextField();
@@ -88,6 +89,18 @@ public class VueClient extends JFrame implements ActionListener{
 	    gbc.gridheight = 1;
 	    gbc.gridwidth = 3;
 		inscriptionPanel.add(txtPseudo, gbc);
+		
+		gbc.gridx = 0;
+	    gbc.gridy = 1;
+	    gbc.gridheight = 1;
+	    gbc.gridwidth = 3;
+	    inscriptionPanel.add(new JLabel("Salle : "), gbc);
+	    
+	    gbc.gridx = 0;
+	    gbc.gridy = 2;
+	    gbc.gridheight = 1;
+	    gbc.gridwidth = 3;
+		inscriptionPanel.add(txtSalle, gbc);
 		
 		gbc.gridx = 0;
 	    gbc.gridy = 3;
