@@ -202,10 +202,10 @@ public class VueClient extends JFrame implements ActionListener{
 	/**
 	 * Actualise le prix courant sur la vue
 	 */
-	public void actualiserPrix() {
-		// TODO : Récupération des infos faites dans Acheteur
-		//lblPrixObjet.setText("Prix courant : " + currentClient.getCurrentObjet().getPrixCourant() + " euros");
-		//lblPseudo.setText("Gagnant : " + this.currentClient.getCurrentObjet().getGagnant());
+	public void actualiserPrix(int price, String winner) {
+		
+		lblPrixObjet.setText("Prix courant : " + price + " euros");
+		lblPseudo.setText("Gagnant : " + winner);
 		txtEncherir.setText("");
 	}
 	
@@ -213,7 +213,6 @@ public class VueClient extends JFrame implements ActionListener{
 	 * 
 	 */
 	public void actualiserObjet(int price, String winner, String descObj, String objName) {
-		// TODO : Récupération des infos faites dans Acheteur
 		
 		lblPrixObjet.setText("Prix actuel : " + price + " euros");
 		lblPseudo.setText("Gagnant : " + winner);

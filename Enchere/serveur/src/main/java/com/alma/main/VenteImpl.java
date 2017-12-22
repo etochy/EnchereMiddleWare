@@ -48,7 +48,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 			for(IAcheteur each : this.fileAttente){
 				this.listeAcheteurs.add(each);
-				each.objetVendu(null);
+				each.objetVendu("", objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
 			}
 			this.fileAttente.clear();
 			return true;
@@ -92,8 +92,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 			//Envoie des resultats finaux pour l'objet courant
 			for(IAcheteur each : this.listeAcheteurs){
-				each.objetVendu(this.acheteurCourant.getPseudo());
-
+				each.objetVendu(this.acheteurCourant.getPseudo(), objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
 			}
 		}
 
@@ -111,7 +110,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 			this.objetCourant.setGagnant("");
 			this.etatVente = EtatVente.ENCHERISSEMENT;
 			for(IAcheteur each : this.listeAcheteurs){
-				each.objetVendu(null);
+				each.objetVendu("", objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
 			}
 		} else{
 			this.etatVente = EtatVente.TERMINE;
@@ -225,14 +224,12 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 	
 	@Override
 	public int getPrixCourant() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.objetCourant.getPrixCourant();
 	}
 
 	@Override
 	public String getGagnantEnchere() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.objetCourant.getGagnant();
 	}
 	
 }

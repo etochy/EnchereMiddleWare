@@ -49,6 +49,7 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	}
 
 	public void encherir(int prix) throws RemoteException, Exception {
+		
 		// TODO : Coder getPrixCourant()
 		
 		if (prix <= this.serveur.getPrixCourant() && prix != -1) {
@@ -61,35 +62,31 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 		}
 	}
 
-	// REMOTE
-	public void objetVendu(String gagnant) throws RemoteException {
-		// TODO : Récupérer les infos de l'objet en cours de vente depuis le serveur directement.
+	// REMOTE, appelé quand un objet est vendu
+	// Le serveur appelle la méthode avec les bons paramètres
+	public void objetVendu(String gagnant, int prix, String descObj, String objNom) throws RemoteException {
 		
-		int price = 0;
-		String winner = "Jean";
-		String descObj = "400GO";
-		String objName = "PS4";
-		
-		this.vue.actualiserObjet(price, winner, descObj, objName);
+		this.vue.actualiserObjet(prix, gagnant, descObj, objNom);
 		this.vue.reprise();
 		
-		if (gagnant != null) { //Fin de l'objet
+		if (!gagnant.equals("")) { 			//Fin de l'objet
 			this.etat = EtatClient.ATTENTE;
-		}else{ //inscription & objet suivant
+		}else{ 								//inscription & objet suivant
 			this.etat = EtatClient.RENCHERI;
 			this.chrono.demarrer();
 		}
 	}
 	
-	// REMOTE
+	// REMOTE, appelé quand une nouvelle enchère survient
+	// Le serveur appelle la méthode avec les bons paramètres
 	public void nouveauPrix(int prix, IAcheteur gagnant) throws RemoteException {
 		try {
-			// TODO : Récupérer prix courant + gagnant depuis le serveur.
 			
-			this.vue.actualiserPrix(prix, gagnant);
+			this.vue.actualiserPrix(prix, gagnant.getPseudo());
 			this.vue.reprise();
 			this.etat = EtatClient.RENCHERI;
 			this.chrono.demarrer();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
