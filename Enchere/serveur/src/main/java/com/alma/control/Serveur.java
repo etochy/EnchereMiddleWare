@@ -1,4 +1,4 @@
-package com.alma.main;
+package com.alma.control;
 
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -7,6 +7,9 @@ import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+
+import com.alma.data.Donnees;
+import com.alma.data.EtatVente;
 
 public class Serveur{
 

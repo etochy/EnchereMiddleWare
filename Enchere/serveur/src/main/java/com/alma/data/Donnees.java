@@ -1,4 +1,4 @@
-package com.alma.main;
+package com.alma.data;
 
 import java.util.Stack;
 
