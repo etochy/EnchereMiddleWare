@@ -14,7 +14,7 @@ import com.alma.data.EtatVente;
 public class Serveur{
 
 	private final static int port = 8090;
-	private static Donnees bdd = new Donnees();
+	//private static Donnees bdd = Donnees.getInstance();
 
 
 	public static void main(String[] argv) {
