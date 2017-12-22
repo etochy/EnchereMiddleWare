@@ -207,6 +207,9 @@ public class VueClient extends JFrame implements ActionListener{
 		lblPrixObjet.setText("Prix courant : " + price + " euros");
 		lblPseudo.setText("Gagnant : " + winner);
 		txtEncherir.setText("");
+		
+		logs.setText(logs.getText()+"\n"+winner + " won : "+price + "€");
+		
 	}
 	
 	/**
@@ -219,14 +222,8 @@ public class VueClient extends JFrame implements ActionListener{
 		lblDescriptionObjet.setText(descObj);
 		txtEncherir.setText("");
 		lblNomObjet.setText(objName);
+		logs.setText(logs.getText()+"\n"+winner + " won : "+price + "€");
 		
-		
-//		if (objet.isDisponible()) {
-//			lblNomObjet.setText(objet.getNom() + "(disponible)");
-//		}
-//		else{
-//			lblNomObjet.setText(objet.getNom() + "(vendu)");
-//		}
 	}
 	
 	private void setClient(Acheteur client) {
@@ -246,6 +243,7 @@ public class VueClient extends JFrame implements ActionListener{
 			if(!txtEncherir.getText().isEmpty()){
 				try {	
 					currentClient.encherir(Integer.parseInt(txtEncherir.getText()));
+					logs.setText(logs.getText()+"\nVous avez encheri : "+txtEncherir.getText() + "€");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -256,6 +254,7 @@ public class VueClient extends JFrame implements ActionListener{
 		else if(arg0.getSource().equals(this.btnStop)){
 			try {
 				currentClient.encherir(-1);
+				logs.setText(logs.getText()+"\nVous n'avez pas encheri : ");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -268,6 +267,7 @@ public class VueClient extends JFrame implements ActionListener{
 				setClient(new Acheteur(txtPseudo.getText(), txtIP.getText()));
 				currentClient.inscription();
 				changerGUI(this.mainPanel);
+				logs.setText(logs.getText()+"\nBienvenu");
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Inscription impossible");
@@ -281,6 +281,7 @@ public class VueClient extends JFrame implements ActionListener{
 		else if(arg0.getSource().equals(btnSoumettreObjet)) {
 			try {
 				currentClient.nouvelleSoumission(txtSoumettreNomObjet.getText(), txtSoumettreDescriptionObjet.getText(), Integer.parseInt(txtSoumettrePrixObjet.getText()));
+				logs.setText(logs.getText()+"\nSoumission d'un nouvel objet");
 			} catch (NumberFormatException e) {
 				System.out.println("Impossible de soumettre cet objet.");
 			}

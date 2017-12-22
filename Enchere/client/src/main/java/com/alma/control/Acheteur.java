@@ -5,7 +5,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import com.alma.api.IAcheteur;
-import com.alma.api.IObjet;
 import com.alma.api.IVente;
 import com.alma.data.Chrono;
 import com.alma.data.EtatClient;
