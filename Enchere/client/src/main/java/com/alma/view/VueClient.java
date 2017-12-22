@@ -203,21 +203,25 @@ public class VueClient extends JFrame implements ActionListener{
 	 * Actualise le prix courant sur la vue
 	 */
 	public void actualiserPrix() {
-		lblPrixObjet.setText("Prix courant : " + currentClient.getCurrentObjet().getPrixCourant() + " euros");
-		lblPseudo.setText("Gagnant : " + this.currentClient.getCurrentObjet().getGagnant());
+		// TODO : Récupération des infos faites dans Acheteur
+		//lblPrixObjet.setText("Prix courant : " + currentClient.getCurrentObjet().getPrixCourant() + " euros");
+		//lblPseudo.setText("Gagnant : " + this.currentClient.getCurrentObjet().getGagnant());
 		txtEncherir.setText("");
 	}
 	
 	/**
 	 * 
 	 */
-	public void actualiserObjet() {
-		IObjet objet = currentClient.getCurrentObjet();
-		lblPrixObjet.setText("Prix actuel : " + objet.getPrixCourant() + " euros");
-		lblPseudo.setText("Gagnant : " + objet.getGagnant());
-		lblDescriptionObjet.setText(objet.getDescription());
+	public void actualiserObjet(int price, String winner, String descObj, String objName) {
+		// TODO : Récupération des infos faites dans Acheteur
+		
+		lblPrixObjet.setText("Prix actuel : " + price + " euros");
+		lblPseudo.setText("Gagnant : " + winner);
+		lblDescriptionObjet.setText(descObj);
 		txtEncherir.setText("");
-		lblNomObjet.setText(objet.getNom());
+		lblNomObjet.setText(objName);
+		
+		
 //		if (objet.isDisponible()) {
 //			lblNomObjet.setText(objet.getNom() + "(disponible)");
 //		}
@@ -287,9 +291,10 @@ public class VueClient extends JFrame implements ActionListener{
 	 * @throws RemoteException 
 	 */
 	public void changerGUI(JPanel vue) throws RemoteException{
-		if(this.currentClient.getCurrentObjet() != null){
+		// TODO : Réactualiser correctement
+		/*if(this.currentClient.getCurrentObjet() != null){
 			actualiserObjet();
-		}
+		}*/
 		this.getContentPane().removeAll();
 		this.setContentPane(vue);
 		this.getContentPane().revalidate();

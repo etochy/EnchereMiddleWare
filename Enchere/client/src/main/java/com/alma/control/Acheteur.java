@@ -19,7 +19,6 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	private String pseudo;
 	private VueClient vue;
 	private IVente serveur;
-	private IObjet currentObjet;
 	private EtatClient etat = EtatClient.ATTENTE;
 	private Chrono chrono = new Chrono(30000, this); // Chrono de 30sc
 
@@ -29,9 +28,6 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 		this.pseudo = pseudo;
 		this.setAdresseServeur(ip);
 		this.serveur = connexionServeur();
-		
-		// Plantage ici -------------------
-		this.currentObjet = serveur.getObjet();
 	}
 
 	private IVente connexionServeur() {
@@ -52,8 +48,10 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 		}
 	}
 
-	public void encherir(int prix) throws RemoteException, Exception {		
-		if (prix <= this.currentObjet.getPrixCourant() && prix != -1) {
+	public void encherir(int prix) throws RemoteException, Exception {
+		// TODO : Coder getPrixCourant()
+		
+		if (prix <= this.serveur.getPrixCourant() && prix != -1) {
 			System.out.println("Prix trop bas, ne soyez pas radin !");
 		} else if (etat == EtatClient.RENCHERI) {
 			chrono.arreter();
@@ -65,8 +63,14 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 
 	// REMOTE
 	public void objetVendu(String gagnant) throws RemoteException {
-		this.currentObjet = serveur.getObjet();
-		this.vue.actualiserObjet();
+		// TODO : Récupérer les infos de l'objet en cours de vente depuis le serveur directement.
+		
+		int price = 0;
+		String winner = "Jean";
+		String descObj = "400GO";
+		String objName = "PS4";
+		
+		this.vue.actualiserObjet(price, winner, descObj, objName);
 		this.vue.reprise();
 		
 		if (gagnant != null) { //Fin de l'objet
@@ -80,9 +84,9 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	// REMOTE
 	public void nouveauPrix(int prix, IAcheteur gagnant) throws RemoteException {
 		try {
-			this.currentObjet.setPrixCourant(prix);
-			this.currentObjet.setGagnant(gagnant.getPseudo());
-			this.vue.actualiserPrix();
+			// TODO : Récupérer prix courant + gagnant depuis le serveur.
+			
+			this.vue.actualiserPrix(prix, gagnant);
 			this.vue.reprise();
 			this.etat = EtatClient.RENCHERI;
 			this.chrono.demarrer();
@@ -99,9 +103,7 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	}
 	
 	public void nouvelleSoumission(String nom, String description, int prix) {
-//		IObjet nouveau = new Objet(nom, description, prix);
 		try {
-//			serveur.ajouterObjet(nouveau);
 			serveur.ajouterObjet(nom, description, prix);
 			System.out.println("Soumission de l'objet " + nom + " au serveur.");
 		} catch (RemoteException e) {
@@ -110,9 +112,6 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	}
 
 	// getters and setters
-	public IObjet getCurrentObjet() {
-		return currentObjet;
-	}
 
 	// REMOTE
 	public long getChrono() {

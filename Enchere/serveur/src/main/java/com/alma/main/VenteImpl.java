@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.alma.api.IAcheteur;
 import com.alma.api.IObjet;
 import com.alma.api.IVente;
@@ -29,13 +31,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 	protected VenteImpl() throws RemoteException {
 		super();
-		this.etatVente = EtatVente.ATTENTE;
-	}
-
-	public VenteImpl(Stack<Objet> listeObjets) throws RemoteException {
-		super();
-		this.listeObjets = listeObjets;
-		this.objetCourant = listeObjets.pop();
+		listeObjets = new Stack<Objet>();
 		this.etatVente = EtatVente.ATTENTE;
 	}
 
@@ -170,20 +166,11 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		return true;
 	}
 
-
-
-//	@Override
-//	public void ajouterObjet(IObjet objet) throws RemoteException {
-//		try {
-//			this.listeObjets.push((Objet) objet);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//
-//	}
 	public void ajouterObjet(String nom, String description, int prix) throws RemoteException {
 		try {
-			this.listeObjets.push(new Objet(nom, description, prix));
+			Objet newObj = new Objet(nom, description, prix);
+			this.listeObjets.add(newObj);
+			if(objetCourant == null) this.objetCourant = listeObjets.pop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -233,4 +220,19 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 	public void setEtatVente(EtatVente etatVente) {
 		this.etatVente = etatVente;
 	}
+	
+	// REMOTE GETTERS
+	
+	@Override
+	public int getPrixCourant() throws RemoteException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getGagnantEnchere() throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }
