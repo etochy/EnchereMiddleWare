@@ -29,6 +29,8 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 		this.pseudo = pseudo;
 		this.setAdresseServeur(ip);
 		this.serveur = connexionServeur();
+		
+		// Plantage ici -------------------
 		this.currentObjet = serveur.getObjet();
 	}
 
