@@ -60,22 +60,28 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 	}
 
 	public synchronized int rencherir(int nouveauPrix, IAcheteur acheteur) throws Exception{
+		
+		// On ajoute la proposition d'un acheteur à une liste temporaire
 		this.enchereTemp.put(acheteur, nouveauPrix);
-		System.out.println(this.enchereTemp.size()+"/"+this.listeAcheteurs.size());
+		
+		System.out.println(this.enchereTemp.size()+"/"+this.listeAcheteurs.size()); // DEBUG LINE
 
-		//On a recu toutes les encheres
+		// Toutes les propositions des acheteurs ont été reçues
 		if(this.enchereTemp.size() == this.listeAcheteurs.size()){
-			if(enchereFinie()){
+			if( enchereFinie() ) {
 				return objetSuivant();
 			}
 			else{
+				
 				actualiserObjet();
-				//On renvoie le resultat du tour
+				
+				//On renvoit le résultat du tour
 				for(IAcheteur each : this.listeAcheteurs){
 					each.nouveauPrix(this.objetCourant.getPrixCourant(), this.acheteurCourant);
 				}
 			}
 		}
+		
 		return objetCourant.getPrixCourant();
 	}
 
@@ -103,23 +109,26 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		// Lenteur entre changements : 
 		Thread.sleep(5000);
 		
-		this.acheteurCourant = null;
+		// On fait participer les Acheteurs en attente (ceux arriver pendant une enchère en cours)
 		this.listeAcheteurs.addAll(this.fileAttente);
 		this.fileAttente.clear();
 
 		//Il y a encore des objets à vendre
 		if(!this.listeObjets.isEmpty()){
+			this.acheteurCourant = null;
 			this.objetCourant = this.listeObjets.pop();
 			this.objetCourant.setGagnant("");
 			this.etatVente = EtatVente.ENCHERISSEMENT;
 			for(IAcheteur each : this.listeAcheteurs){
-				each.objetVendu("", objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
+				each.reprendreEnchere("", objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
 			}
 		} else{
 			this.etatVente = EtatVente.TERMINE;
 			for(IAcheteur each : this.listeAcheteurs){
-				each.finEnchere();
+				//each.finEnchere();
+				each.objetVendu(acheteurCourant.getPseudo(), objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
 			}
+			this.acheteurCourant = null;
 			return 0;
 		}
 		return this.objetCourant.getPrixBase();
@@ -128,7 +137,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 
 	/**
-	 * Methode utilitaire permettant d'actualiser le prix de l'objet et le gagnant selon les encheres recues.
+	 * Actualise le prix de l'objet et le gagnant selon les enchères reçues.
 	 * @throws RemoteException
 	 */
 	public void actualiserObjet() throws RemoteException{
@@ -150,22 +159,56 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 
 	/**
-	 * méthode utilitaire qui permet de savoir si les encheres sont finis.
-	 * @return true si on a reçu que des -1, donc si l'enchere est finie, sinon false.
+	 * Permet de savoir si les enchères pour l'object proposé sont finies.
+	 * @return true Si uniquement des -1 sont reçus, false sinon.
 	 */
 	public boolean enchereFinie(){	
+		
+		boolean ret = false;
+		
 		Set<IAcheteur> cles = this.enchereTemp.keySet();
 		Iterator<IAcheteur> it = cles.iterator();
-
+		
+		int cpt = 0;
+		
+		// Compte le nombre d'acheteur passant l'enchère
 		while (it.hasNext()){
 			IAcheteur cle = it.next();
 			Integer valeur = this.enchereTemp.get(cle);
 
-			if(valeur != -1){
-				return false;	
+			if(valeur == -1){
+				cpt++;
 			}
 		}
-		return true;
+		
+		// Uniquement des -1 de reçu : return true
+		if(cpt == cles.size()) ret = true;
+		
+		// Une seule nouvelle proposition
+		else if(cpt == cles.size() - 1) {
+			it = cles.iterator();
+			String tempName = "";
+			
+			// On cherche l'acheteur faisant une nouvelle offre
+			while(it.hasNext()) {
+				IAcheteur current = it.next();
+				if(enchereTemp.get(current) != -1) {
+					try {
+						tempName = current.getPseudo();
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			// Si l'acheteur proposant la nouvelle offre est déjà l'acheteur courant : return true
+			try {
+				if (tempName.equals(acheteurCourant.getPseudo())) ret = true;
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return ret;
 	}
 
 	public void ajouterObjet(String nom, String description, int prix) throws RemoteException {
@@ -174,13 +217,10 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 			this.listeObjets.add(newObj);
 			if(objetCourant == null) {
 				this.objetCourant = listeObjets.pop();
-				
-				// TODO : Contacter tous les acheteurs pour les informer qu'une enchère débute.
-				
 				this.objetCourant.setGagnant("");
 				this.etatVente = EtatVente.ENCHERISSEMENT;
 				for(IAcheteur each : this.listeAcheteurs){
-					each.objetVendu("", objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
+					each.reprendreEnchere("", objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
 				}
 			}
 		} catch (Exception e) {
