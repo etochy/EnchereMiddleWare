@@ -1,14 +1,16 @@
-package client;
+package com.alma.control;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import serveur.IObjet;
-import serveur.IVente;
-//import serveur.Objet;
+import com.alma.api.IAcheteur;
+import com.alma.api.IVente;
+import com.alma.data.Chrono;
+import com.alma.data.EtatClient;
+import com.alma.view.VueClient;
 
-public class Client extends UnicastRemoteObject implements IAcheteur {
+public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -16,20 +18,18 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 	private String pseudo;
 	private VueClient vue;
 	private IVente serveur;
-	private IObjet currentObjet;
 	private EtatClient etat = EtatClient.ATTENTE;
 	private Chrono chrono = new Chrono(30000, this); // Chrono de 30sc
 
-	public Client(String pseudo, String ip) throws RemoteException {
+	public Acheteur(String pseudo, String ip) throws RemoteException {
 		super();
 		this.chrono.start();
 		this.pseudo = pseudo;
 		this.setAdresseServeur(ip);
 		this.serveur = connexionServeur();
-		this.currentObjet = serveur.getObjet();
 	}
 
-	public IVente connexionServeur() {
+	private IVente connexionServeur() {
 		try {
 			IVente serveur = (IVente) Naming.lookup("//" + adresseServeur);
 			System.out.println("Connexion au serveur " + adresseServeur + " reussi.");
@@ -47,8 +47,11 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 		}
 	}
 
-	public void encherir(int prix) throws RemoteException, Exception {		
-		if (prix <= this.currentObjet.getPrixCourant() && prix != -1) {
+	public void encherir(int prix) throws RemoteException, Exception {
+		
+		// TODO : Coder getPrixCourant()
+		
+		if (prix <= this.serveur.getPrixCourant() && prix != -1) {
 			System.out.println("Prix trop bas, ne soyez pas radin !");
 		} else if (etat == EtatClient.RENCHERI) {
 			chrono.arreter();
@@ -58,45 +61,53 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 		}
 	}
 
-	@Override
-	public void objetVendu(String gagnant) throws RemoteException {
-		this.currentObjet = serveur.getObjet();
-		this.vue.actualiserObjet();
+	// REMOTE, appelé quand un objet est vendu
+	// Le serveur appelle la méthode avec les bons paramètres
+	public void objetVendu(String gagnant, int prix, String descObj, String objNom) throws RemoteException {
+		this.vue.actualiserObjet(prix, gagnant, descObj, objNom);
 		this.vue.reprise();
-		
-		if (gagnant != null) { //Fin de l'objet
-			this.etat = EtatClient.ATTENTE;
-		}else{ //inscription & objet suivant
-			this.etat = EtatClient.RENCHERI;
-			this.chrono.demarrer();
-		}
+		this.etat = EtatClient.RENCHERI;
+		this.chrono.demarrer();
 	}
-
-	@Override
+	
+	// REMOTE, appelée lorsqu'un nouveau participant arrive mais qu'aucune enchère n'est en cours.
+	public void nouveauParticipant() {
+		this.vue.attente();
+		this.etat = EtatClient.ATTENTE;
+	}
+	
+	// REMOTE, appelée lorsqu'un nouveau participant arrive et qu'une enchère est en cours.
+	public void nouveauParticipant(String gagnant, int prix, String descObj, String objNom) {
+		this.vue.actualiserObjet(prix, gagnant, descObj, objNom);
+		this.vue.reprise();
+		this.etat = EtatClient.RENCHERI;
+		this.chrono.demarrer();
+	}
+	
+	// REMOTE, appelé quand une nouvelle enchère survient
+	// Le serveur appelle la méthode avec les bons paramètres
 	public void nouveauPrix(int prix, IAcheteur gagnant) throws RemoteException {
 		try {
-			this.currentObjet.setPrixCourant(prix);
-			this.currentObjet.setGagnant(gagnant.getPseudo());
-			this.vue.actualiserPrix();
+			
+			this.vue.actualiserPrix(prix, gagnant.getPseudo());
 			this.vue.reprise();
 			this.etat = EtatClient.RENCHERI;
 			this.chrono.demarrer();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
 	
-	@Override
+	// REMOTE
 	public void finEnchere() throws RemoteException {
 		this.etat = EtatClient.TERMINE;
 		System.exit(0);
 	}
 	
 	public void nouvelleSoumission(String nom, String description, int prix) {
-//		IObjet nouveau = new Objet(nom, description, prix);
 		try {
-//			serveur.ajouterObjet(nouveau);
 			serveur.ajouterObjet(nom, description, prix);
 			System.out.println("Soumission de l'objet " + nom + " au serveur.");
 		} catch (RemoteException e) {
@@ -104,20 +115,9 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 		}
 	}
 
-	public static void main(String[] argv) {
-		try {
-			new VueClient();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	// getters and setters
-	public IObjet getCurrentObjet() {
-		return currentObjet;
-	}
 
-	@Override
+	// REMOTE
 	public long getChrono() {
 		return chrono.getTemps();
 	}
@@ -138,7 +138,7 @@ public class Client extends UnicastRemoteObject implements IAcheteur {
 		return this.etat;
 	}
 	
-	@Override
+	// REMOTE
 	public String getPseudo() throws RemoteException {
 		return pseudo;
 	}

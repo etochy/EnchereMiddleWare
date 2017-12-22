@@ -1,6 +1,8 @@
-package serveur;
+package com.alma.main;
 
 import java.util.Stack;
+
+import com.alma.api.IObjet;
 
 
 public class Donnees {
@@ -18,13 +20,7 @@ public class Donnees {
 	
 	//TODO a virer par la suite
 	public void initObjets(){
-		Objet obj1 = new Objet("jarre","jarre de ramses 3", 250);
-		Objet obj2 = new Objet("herisson","herisson des bois", 100);
-		Objet obj3 = new Objet("lit","un lit tout doux avec lequel on n'a pas envie de se lever le matin", 300);
-		
-		listeObjets.push(obj1);
-		listeObjets.push(obj2);
-		listeObjets.push(obj3);
+
 	}
 	
 	

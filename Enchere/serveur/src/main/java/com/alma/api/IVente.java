@@ -1,9 +1,7 @@
-package serveur;
+package com.alma.api;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-
-import client.IAcheteur;
 
 public interface IVente extends Remote {
 
@@ -31,8 +29,10 @@ public interface IVente extends Remote {
 	 * @throws RemoteException
 	 */
 	public void ajouterObjet(String nom, String description, int prix) throws RemoteException;
-//	public void ajouterObjet(IObjet nouveau) throws RemoteException;
 	
+	public int getPrixCourant() throws RemoteException;
+	
+	public String getGagnantEnchere() throws RemoteException;
 	
 	public IObjet getObjet() throws RemoteException;
 

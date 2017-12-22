@@ -1,4 +1,6 @@
-package serveur;
+package com.alma.main;
+
+import com.alma.api.IObjet;
 
 public class Objet implements IObjet{
 

@@ -1,4 +1,4 @@
-package serveur;
+package com.alma.main;
 
 public enum EtatVente {
 	ATTENTE,

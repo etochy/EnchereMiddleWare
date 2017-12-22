@@ -1,7 +1,9 @@
-package client;
+package com.alma.api;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+
+import com.alma.data.EtatClient;
 
 public interface IAcheteur extends Remote {
 
@@ -11,7 +13,11 @@ public interface IAcheteur extends Remote {
 	 *            Client qui a gagne l'enchere
 	 * @throws RemoteException
 	 */
-	public void objetVendu(String gagnant) throws RemoteException;
+	public void objetVendu(String gagnant, int prix, String descObj, String objNom) throws RemoteException;
+	
+	public void nouveauParticipant() throws RemoteException;
+
+	public void nouveauParticipant(String gagnant, int prix, String descObj, String objNom) throws RemoteException;
 
 	public void nouveauPrix(int prix, IAcheteur gagnant) throws RemoteException;
 	

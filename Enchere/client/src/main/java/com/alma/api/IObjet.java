@@ -1,4 +1,4 @@
-package serveur;
+package com.alma.api;
 
 import java.io.Serializable;
 

@@ -1,17 +1,18 @@
-package client;
+package com.alma.data;
+
+import com.alma.control.Acheteur;
 
 public class Chrono extends Thread {
 
-	private Client client;
+	private Acheteur client;
 	private long tempsFin;
 	private long tempsEcoule;
 	private boolean enCours = false;
 	
-	public Chrono(long secondes, Client c) {
+	public Chrono(long secondes, Acheteur c) {
 		tempsFin = secondes;
 		client = c;
 	}
-	
 	
 	public void run() {
 		while(true) {
@@ -38,9 +39,6 @@ public class Chrono extends Thread {
 			System.out.print("");
 		}
 	}
-	
-
-
 	
 	public long getTemps() {
 		return tempsEcoule;

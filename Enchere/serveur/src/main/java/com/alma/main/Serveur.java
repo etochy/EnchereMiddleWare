@@ -1,4 +1,4 @@
-package serveur;
+package com.alma.main;
 
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -7,9 +7,6 @@ import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-
-
-
 
 public class Serveur{
 
@@ -21,10 +18,7 @@ public class Serveur{
 
 		try {
 			System.out.println("@ IP : " + InetAddress.getLocalHost());
-
-			// Init des objets, a d�gager
-			bdd.initObjets();
-			VenteImpl vente = new VenteImpl(bdd.getListeObjets());
+			VenteImpl vente = new VenteImpl();
 
 			LocateRegistry.createRegistry(port);
 			Naming.bind("//localhost:"+port+"/enchere", vente);
@@ -34,8 +28,7 @@ public class Serveur{
 
 				//On recrée une nouvelle vente
 				if(vente.getEtatVente() == EtatVente.TERMINE){
-					bdd.initObjets();
-					vente = new VenteImpl(bdd.getListeObjets());
+					//TODO : Recréer correctement les ventes ?
 				}
 
 			}

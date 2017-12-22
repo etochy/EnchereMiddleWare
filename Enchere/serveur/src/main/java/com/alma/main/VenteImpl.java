@@ -1,4 +1,4 @@
-package serveur;
+package com.alma.main;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -10,7 +10,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import client.IAcheteur;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import com.alma.api.IAcheteur;
+import com.alma.api.IObjet;
+import com.alma.api.IVente;
 
 public class VenteImpl extends UnicastRemoteObject implements IVente{
 
@@ -27,18 +31,10 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 	protected VenteImpl() throws RemoteException {
 		super();
+		listeObjets = new Stack<Objet>();
 		this.etatVente = EtatVente.ATTENTE;
 	}
 
-	public VenteImpl(Stack<Objet> listeObjets) throws RemoteException {
-		super();
-		this.listeObjets = listeObjets;
-		this.objetCourant = listeObjets.pop();
-		this.etatVente = EtatVente.ATTENTE;
-	}
-
-
-	@Override
 	public synchronized boolean inscriptionAcheteur(String login, IAcheteur acheteur) throws Exception{
 		for(IAcheteur each : listeAcheteurs){
 			if(each.getPseudo().equals(login) || each.getPseudo().equals(acheteur.getPseudo())){
@@ -52,7 +48,8 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 			for(IAcheteur each : this.fileAttente){
 				this.listeAcheteurs.add(each);
-				each.objetVendu(null);
+				if(objetCourant == null) each.nouveauParticipant();
+				else each.nouveauParticipant(acheteurCourant.getPseudo(), objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
 			}
 			this.fileAttente.clear();
 			return true;
@@ -60,8 +57,6 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		return false;
 	}
 
-
-	@Override
 	public synchronized int rencherir(int nouveauPrix, IAcheteur acheteur) throws Exception{
 		this.enchereTemp.put(acheteur, nouveauPrix);
 		System.out.println(this.enchereTemp.size()+"/"+this.listeAcheteurs.size());
@@ -98,8 +93,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 			//Envoie des resultats finaux pour l'objet courant
 			for(IAcheteur each : this.listeAcheteurs){
-				each.objetVendu(this.acheteurCourant.getPseudo());
-
+				each.objetVendu(this.acheteurCourant.getPseudo(), objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
 			}
 		}
 
@@ -117,7 +111,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 			this.objetCourant.setGagnant("");
 			this.etatVente = EtatVente.ENCHERISSEMENT;
 			for(IAcheteur each : this.listeAcheteurs){
-				each.objetVendu(null);
+				each.objetVendu("", objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
 			}
 		} else{
 			this.etatVente = EtatVente.TERMINE;
@@ -172,28 +166,27 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		return true;
 	}
 
-
-
-//	@Override
-//	public void ajouterObjet(IObjet objet) throws RemoteException {
-//		try {
-//			this.listeObjets.push((Objet) objet);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//
-//	}
-	@Override
 	public void ajouterObjet(String nom, String description, int prix) throws RemoteException {
 		try {
-			this.listeObjets.push(new Objet(nom, description, prix));
+			Objet newObj = new Objet(nom, description, prix);
+			this.listeObjets.add(newObj);
+			if(objetCourant == null) {
+				this.objetCourant = listeObjets.pop();
+				
+				// TODO : Contacter tous les acheteurs pour les informer qu'une enchère débute.
+				
+				this.objetCourant.setGagnant("");
+				this.etatVente = EtatVente.ENCHERISSEMENT;
+				for(IAcheteur each : this.listeAcheteurs){
+					each.objetVendu("", objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}	
 	
-	@Override
 	public IObjet getObjet() throws RemoteException {
 		return this.objetCourant;
 	}
@@ -237,4 +230,17 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 	public void setEtatVente(EtatVente etatVente) {
 		this.etatVente = etatVente;
 	}
+	
+	// REMOTE GETTERS
+	
+	@Override
+	public int getPrixCourant() throws RemoteException {
+		return this.objetCourant.getPrixCourant();
+	}
+
+	@Override
+	public String getGagnantEnchere() throws RemoteException {
+		return this.objetCourant.getGagnant();
+	}
+	
 }

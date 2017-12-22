@@ -1,4 +1,4 @@
-package client;
+package com.alma.data;
 
 public enum EtatClient {
 	ATTENTE,

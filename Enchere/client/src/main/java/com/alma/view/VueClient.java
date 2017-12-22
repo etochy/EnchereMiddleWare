@@ -1,4 +1,4 @@
-package client;
+package com.alma.view;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -16,14 +16,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import serveur.IObjet;
+import com.alma.api.IObjet;
+import com.alma.control.Acheteur;
 
 public class VueClient extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 9070911591784925769L;
 	
 	// Informations sur de l'Etat de la vente
-	private Client currentClient;
+	private Acheteur currentClient;
 	
 	// Elements SWING
 	private JPanel mainPanel = new JPanel();
@@ -53,10 +54,13 @@ public class VueClient extends JFrame implements ActionListener{
 	
 	private JFrame frmSoumettre = new JFrame("Soumettre une enchere");
 
-	public JLabel getLblEncherir() {
-		return lblEncherir;
-	}
-
+	// CONSTRUCTOR
+	
+	/**
+	 * Constructeur
+	 * 
+	 * @throws Exception
+	 */
 	public VueClient() throws Exception {
 		super();
 
@@ -195,41 +199,51 @@ public class VueClient extends JFrame implements ActionListener{
 		this.setVisible(true);
 	}
 	
-	public void actualiserPrix() {
-		lblPrixObjet.setText("Prix courant : " + currentClient.getCurrentObjet().getPrixCourant() + " euros");
-		lblPseudo.setText("Gagnant : " + this.currentClient.getCurrentObjet().getGagnant());
+	/**
+	 * Actualise le prix courant sur la vue
+	 */
+	public void actualiserPrix(int price, String winner) {
+		
+		lblPrixObjet.setText("Prix courant : " + price + " euros");
+		lblPseudo.setText("Gagnant : " + winner);
 		txtEncherir.setText("");
+		
+		logs.setText(logs.getText()+"\n"+winner + " won : "+price + "€");
+		
 	}
 	
-	public void actualiserObjet() {
-		IObjet objet = currentClient.getCurrentObjet();
-		lblPrixObjet.setText("Prix actuel : " + objet.getPrixCourant() + " euros");
-		lblPseudo.setText("Gagnant : " + objet.getGagnant());
-		lblDescriptionObjet.setText(objet.getDescription());
+	/**
+	 * 
+	 */
+	public void actualiserObjet(int price, String winner, String descObj, String objName) {
+		
+		lblPrixObjet.setText("Prix actuel : " + price + " euros");
+		lblPseudo.setText("Gagnant : " + winner);
+		lblDescriptionObjet.setText(descObj);
 		txtEncherir.setText("");
-		lblNomObjet.setText(objet.getNom());
-//		if (objet.isDisponible()) {
-//			lblNomObjet.setText(objet.getNom() + "(disponible)");
-//		}
-//		else{
-//			lblNomObjet.setText(objet.getNom() + "(vendu)");
-//		}
+		lblNomObjet.setText(objName);
+		logs.setText(logs.getText()+"\n"+winner + " won : "+price + "€");
+		
 	}
 	
-	private void setClient(Client client) {
+	private void setClient(Acheteur client) {
 		currentClient = client;
 		client.setVue(this);
+		try {
+			this.setTitle("Vente aux enchères - " + currentClient.getPseudo().toString());
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	
-	
-	@Override
+		
 	public synchronized void actionPerformed(ActionEvent arg0) {
 		// ENCHERIR			
 		if(arg0.getSource().equals(this.btnEncherir)){
 			if(!txtEncherir.getText().isEmpty()){
 				try {	
 					currentClient.encherir(Integer.parseInt(txtEncherir.getText()));
+					logs.setText(logs.getText()+"\nVous avez encheri : "+txtEncherir.getText() + "€");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -240,6 +254,7 @@ public class VueClient extends JFrame implements ActionListener{
 		else if(arg0.getSource().equals(this.btnStop)){
 			try {
 				currentClient.encherir(-1);
+				logs.setText(logs.getText()+"\nVous n'avez pas encheri : ");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -249,9 +264,10 @@ public class VueClient extends JFrame implements ActionListener{
 		// INSCRIPTION
 		else if(arg0.getSource().equals(btnPseudo)) {
 			try {
-				setClient(new Client(txtPseudo.getText(), txtIP.getText()));
+				setClient(new Acheteur(txtPseudo.getText(), txtIP.getText()));
 				currentClient.inscription();
 				changerGUI(this.mainPanel);
+				logs.setText(logs.getText()+"\nBienvenu");
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Inscription impossible");
@@ -265,6 +281,7 @@ public class VueClient extends JFrame implements ActionListener{
 		else if(arg0.getSource().equals(btnSoumettreObjet)) {
 			try {
 				currentClient.nouvelleSoumission(txtSoumettreNomObjet.getText(), txtSoumettreDescriptionObjet.getText(), Integer.parseInt(txtSoumettrePrixObjet.getText()));
+				logs.setText(logs.getText()+"\nSoumission d'un nouvel objet");
 			} catch (NumberFormatException e) {
 				System.out.println("Impossible de soumettre cet objet.");
 			}
@@ -279,9 +296,10 @@ public class VueClient extends JFrame implements ActionListener{
 	 * @throws RemoteException 
 	 */
 	public void changerGUI(JPanel vue) throws RemoteException{
-		if(this.currentClient.getCurrentObjet() != null){
+		// TODO : Réactualiser correctement
+		/*if(this.currentClient.getCurrentObjet() != null){
 			actualiserObjet();
-		}
+		}*/
 		this.getContentPane().removeAll();
 		this.setContentPane(vue);
 		this.getContentPane().revalidate();
@@ -329,5 +347,8 @@ public class VueClient extends JFrame implements ActionListener{
 		this.lblChrono.setText("Chrono : "+ temps+"/"+tempsMax);
 	}
 
+	public JLabel getLblEncherir() {
+		return lblEncherir;
+	}
 
 }
