@@ -36,7 +36,8 @@ public class VenteImpl extends UnicastRemoteObject implements IVente {
 	protected VenteImpl() throws RemoteException {
 		super();
 
-		// Les pairs permettent de séparer les utilisateurs de la file d'attente des utilisateurs
+		// Les pairs permettent de séparer les utilisateurs de la file d'attente
+		// des utilisateurs
 		// participant à l'enchère dans la salle courante.
 		salles = new ArrayList<Pair<List<IAcheteur>, List<IAcheteur>>>();
 		enchereCourante = new ArrayList<Map<IAcheteur, Integer>>();
@@ -59,8 +60,13 @@ public class VenteImpl extends UnicastRemoteObject implements IVente {
 				enchereCourante.add(new HashMap<IAcheteur, Integer>());
 
 				for (Objet obj : d.getListNotSoldObject()) {
-					if (obj.getNumSalle() == i)
+					if (obj.getNumSalle() == i) {
 						listeObjets.get(i).push(obj);
+					}
+				}
+
+				if (!listeObjets.get(i).isEmpty()) {
+					objetCourant.set(i, listeObjets.get(i).pop());
 				}
 			}
 
@@ -87,7 +93,8 @@ public class VenteImpl extends UnicastRemoteObject implements IVente {
 				if (objetCourant.get(salle) == null)
 					each.nouveauParticipant();
 				else
-					each.nouveauParticipant(acheteurCourant.get(salle).getPseudo(),
+					each.nouveauParticipant(
+							acheteurCourant.get(salle) != null ? acheteurCourant.get(salle).getPseudo() : null,
 							objetCourant.get(salle).getPrixCourant(), objetCourant.get(salle).getDescription(),
 							objetCourant.get(salle).getNom());
 			}
@@ -123,18 +130,19 @@ public class VenteImpl extends UnicastRemoteObject implements IVente {
 	 * objets.
 	 * 
 	 * @throws InterruptedException
-	 * @throws IOException 
-	 * @throws IllegalArgumentException 
-	 * @throws NoSuchElementException 
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 * @throws NoSuchElementException
 	 */
-	public int objetSuivant(int salle) throws InterruptedException, NoSuchElementException, IllegalArgumentException, IOException {
+	public int objetSuivant(int salle)
+			throws InterruptedException, NoSuchElementException, IllegalArgumentException, IOException {
 		enchereCourante.get(salle).clear();
 		etatVente.set(salle, EtatVente.ATTENTE);
 
 		if (acheteurCourant.get(salle) != null) {
 			objetCourant.get(salle).setDisponible(false);
 			objetCourant.get(salle).setGagnant(this.acheteurCourant.get(salle).getPseudo());
-			
+
 			Data.getInstance().soldObject(objetCourant.get(salle).getNom(), salle);
 
 			// Envoie des resultats finaux pour l'objet courant
