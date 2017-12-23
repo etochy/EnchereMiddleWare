@@ -115,7 +115,11 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	
 	public void nouvelleSoumission(String nom, String description, int prix) {
 		try {
+//<<<<<<< HEAD
 			serveur.ajouterObjet(nom, description, prix,salle);
+//=======
+//			serveur.ajouterObjet(nom, description, prix, 0);
+//>>>>>>> bdd
 			System.out.println("Soumission de l'objet " + nom + " au serveur.");
 		} catch (RemoteException e) {
 			e.printStackTrace();

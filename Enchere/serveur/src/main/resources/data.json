@@ -1,1 +1,1 @@
-[{"nom":"table","description":"très belle table","prixBase":14,"prixCourant":14,"disponible":true,"gagnant":""},{"nom":"cuillere","description":"Miaou","prixBase":40,"prixCourant":40,"disponible":true,"gagnant":""}]
+[{"nom":"table","description":"très belle table","prixBase":14,"prixCourant":14,"disponible":true,"gagnant":"","numSalle":0},{"nom":"cuillere","description":"Miaou","prixBase":40,"prixCourant":40,"disponible":true,"gagnant":"","numSalle":0},{"nom":"route","description":"belle route","prixBase":54,"prixCourant":54,"disponible":true,"gagnant":"","numSalle":0}]

@@ -11,8 +11,9 @@ public class Objet implements IObjet {
 	private int prixCourant;
 	private boolean disponible;
 	private String gagnant;
+	private int numSalle;
 
-	public Objet(String nom, String description, int prixBase) {
+	public Objet(String nom, String description, int prixBase, int numSalle) {
 		super();
 		this.nom = nom;
 		this.description = description;
@@ -20,6 +21,7 @@ public class Objet implements IObjet {
 		this.prixCourant = prixBase;
 		this.disponible = true;
 		this.gagnant = "";
+		this.numSalle = numSalle;
 	}
 
 	/*
@@ -142,4 +144,11 @@ public class Objet implements IObjet {
 		this.gagnant = gagnant;
 	}
 
+	public int getNumSalle() {
+		return numSalle;
+	}
+
+	public void setNumSalle(int numSalle) {
+		this.numSalle = numSalle;
+	}
 }
