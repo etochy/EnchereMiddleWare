@@ -33,8 +33,6 @@ public interface IVente extends Remote {
 	public int getPrixCourant(int salle) throws RemoteException;
 	
 	public String getGagnantEnchere(int salle) throws RemoteException;
-	
-	public IObjet getObjet(int salle) throws RemoteException;
 
 
 }
