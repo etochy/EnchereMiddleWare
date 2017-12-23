@@ -1,1 +1,1 @@
-[{"nom":"voiture","description":"belle voiture","prixBase":5000,"prixCourant":5000,"disponible":true,"gagnant":"","numSalle":0}]
+[{"nom":"voiture","description":"belle voiture","prixBase":5000,"prixCourant":5000,"disponible":true,"gagnant":"","numSalle":0},{"nom":"petite fille","description":"petite fille de 8 ans","prixBase":100,"prixCourant":100,"disponible":true,"gagnant":"","numSalle":0},{"nom":"tabouret","description":"tabouret à 4 pied","prixBase":4000,"prixCourant":4000,"disponible":true,"gagnant":"","numSalle":0}]

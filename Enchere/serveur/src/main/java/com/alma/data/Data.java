@@ -52,19 +52,21 @@ public class Data {
 		String jsonNotSold = gson.toJson(listNotSoldObject);
 		String jsonSold = gson.toJson(listSoldObject);
 
+		fileNotSold.createNewFile();
+		fileSold.createNewFile();
+
 		// Save not sold objects
-		if (fileNotSold.createNewFile()) {
-			writer = new FileWriter(fileNotSold);
-			writer.write(jsonNotSold);
-			writer.close();
-		}
+
+		writer = new FileWriter(fileNotSold);
+		writer.write(jsonNotSold);
+		writer.close();
 
 		// Save sold objects
-		if (fileSold.createNewFile()) {
-			writer = new FileWriter(fileSold);
-			writer.write(jsonSold);
-			writer.close();
-		}
+
+		writer = new FileWriter(fileSold);
+		writer.write(jsonSold);
+		writer.close();
+
 	}
 
 	/*
