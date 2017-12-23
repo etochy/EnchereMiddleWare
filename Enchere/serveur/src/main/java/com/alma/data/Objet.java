@@ -1,9 +1,8 @@
-package com.alma.main;
+package com.alma.data;
 
 import com.alma.api.IObjet;
 
-public class Objet implements IObjet{
-
+public class Objet implements IObjet {
 
 	private static final long serialVersionUID = 1L;
 	private String nom;
@@ -12,9 +11,7 @@ public class Objet implements IObjet{
 	private int prixCourant;
 	private boolean disponible;
 	private String gagnant;
-	
-	
-	
+
 	public Objet(String nom, String description, int prixBase) {
 		super();
 		this.nom = nom;
@@ -24,71 +21,100 @@ public class Objet implements IObjet{
 		this.disponible = true;
 		this.gagnant = "";
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see serveur.IObjet#getNom()
 	 */
 	@Override
 	public String getNom() {
 		return nom;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see serveur.IObjet#setNom(java.lang.String)
 	 */
 	@Override
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see serveur.IObjet#getDescription()
 	 */
 	@Override
 	public String getDescription() {
 		return description;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see serveur.IObjet#setDescription(java.lang.String)
 	 */
 	@Override
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see serveur.IObjet#getPrixBase()
 	 */
 	@Override
 	public int getPrixBase() {
 		return prixBase;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see serveur.IObjet#setPrixBase(int)
 	 */
 	@Override
 	public void setPrixBase(int prixBase) {
 		this.prixBase = prixBase;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see serveur.IObjet#isDisponible()
 	 */
 	@Override
 	public boolean isDisponible() {
 		return disponible;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see serveur.IObjet#setDisponible(boolean)
 	 */
 	@Override
 	public void setDisponible(boolean disponible) {
 		this.disponible = disponible;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see serveur.IObjet#getPrixCourant()
 	 */
 	@Override
 	public int getPrixCourant() {
 		return prixCourant;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see serveur.IObjet#setPrixCourant(int)
 	 */
 	@Override
@@ -96,7 +122,9 @@ public class Objet implements IObjet{
 		this.prixCourant = prixCourant;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see serveur.IObjet#getGagnant()
 	 */
 	@Override
@@ -104,14 +132,14 @@ public class Objet implements IObjet{
 		return gagnant;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see serveur.IObjet#setGagnant(java.lang.String)
 	 */
 	@Override
 	public void setGagnant(String gagnant) {
 		this.gagnant = gagnant;
 	}
-	
-	
-	
+
 }

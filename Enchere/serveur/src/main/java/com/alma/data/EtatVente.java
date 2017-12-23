@@ -1,4 +1,4 @@
-package com.alma.main;
+package com.alma.data;
 
 public enum EtatVente {
 	ATTENTE,

@@ -240,6 +240,10 @@ public class VueClient extends JFrame implements ActionListener{
 		
 	}
 	
+	/**
+	 * Associe un objet "Acheteur" à la vue courante. Modifie le titre de la fenêtre avec le nom du client.
+	 * @param client
+	 */
 	private void setClient(Acheteur client) {
 		currentClient = client;
 		client.setVue(this);
@@ -320,12 +324,17 @@ public class VueClient extends JFrame implements ActionListener{
 		this.getContentPane().repaint();
 	}
 	
-	
+	/**
+	 * Empêche le client d'enchérir par la désactivation du bouton "Enchérir".
+	 */
 	public void attente(){
 		this.btnEncherir.setEnabled(false);
 		this.btnStop.setEnabled(false);
 	}
 	
+	/**
+	 * Réactive le bouton "Enchérir" et "Stop" pour permettre au client d'enchérir.
+	 */
 	public void reprise(){
 		this.btnEncherir.setEnabled(true);
 		this.btnStop.setEnabled(true);

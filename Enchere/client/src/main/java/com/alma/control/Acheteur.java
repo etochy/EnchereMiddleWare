@@ -50,11 +50,10 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	}
 
 	public void encherir(int prix) throws RemoteException, Exception {
-		
-		// TODO : Coder getPrixCourant()
-		
 		if (prix <= this.serveur.getPrixCourant(salle) && prix != -1) {
-			System.out.println("Prix trop bas, ne soyez pas radin !");
+			
+			System.out.println("! Enchère inférieure au prix actuel !");
+
 		} else if (etat == EtatClient.RENCHERI) {
 			chrono.arreter();
 			vue.attente();
@@ -64,8 +63,14 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	}
 
 	// REMOTE, appelé quand un objet est vendu
-	// Le serveur appelle la méthode avec les bons paramètres
 	public void objetVendu(String gagnant, int prix, String descObj, String objNom) throws RemoteException {
+		this.vue.actualiserObjet(prix, gagnant, descObj, objNom);
+		this.vue.attente();
+		this.etat = EtatClient.ATTENTE;
+	}
+	
+	// REMOTE, appelé quand une vente reprend
+	public void reprendreEnchere(String gagnant, int prix, String descObj, String objNom) {
 		this.vue.actualiserObjet(prix, gagnant, descObj, objNom);
 		this.vue.reprise();
 		this.etat = EtatClient.RENCHERI;
