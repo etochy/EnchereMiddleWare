@@ -1,4 +1,4 @@
-package com.alma.main;
+package com.alma.control;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -15,6 +15,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.alma.api.IAcheteur;
 import com.alma.api.IObjet;
 import com.alma.api.IVente;
+import com.alma.data.EtatVente;
+import com.alma.data.Objet;
 
 public class VenteImpl extends UnicastRemoteObject implements IVente{
 
