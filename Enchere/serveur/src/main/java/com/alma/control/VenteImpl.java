@@ -39,6 +39,8 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		for (int i = 0; i < 10 ; ++i) {
 			this.listeObjets.add(new Stack<Objet>());
 			this.etatVente.add(EtatVente.ATTENTE);
+			this.objetCourant.add(null);
+			this.acheteurCourant.add(null);
 			this.enchereTemp.add(new HashMap<IAcheteur, Integer>());
 			this.salles.add(new Pair<List<IAcheteur>, List<IAcheteur>>(new ArrayList<IAcheteur>(), new ArrayList<IAcheteur>()));
 		}
@@ -59,7 +61,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 			for(IAcheteur each : this.salles.get(salle).getSecond()){
 				this.salles.get(salle).getFirst().add(each);
-				if(objetCourant == null) each.nouveauParticipant();
+				if(objetCourant.get(salle) == null) each.nouveauParticipant();
 				else each.nouveauParticipant(acheteurCourant.get(salle).getPseudo(), objetCourant.get(salle).getPrixCourant(), objetCourant.get(salle).getDescription(), objetCourant.get(salle).getNom());
 			}
 			this.salles.get(salle).getSecond().clear();
@@ -68,14 +70,13 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		return false;
 	}
 
-//<<<<<<< HEAD:Enchere/serveur/src/main/java/com/alma/main/VenteImpl.java
 	public synchronized int rencherir(int nouveauPrix, IAcheteur acheteur, int salle) throws Exception{
 		// On ajoute la proposition d'un acheteur à une liste temporaire
 		this.enchereTemp.get(salle).put(acheteur, nouveauPrix);
-		System.out.println(this.enchereTemp.size()+"/"+this.salles.get(salle).getFirst().size());
+		System.out.println(this.enchereTemp.get(salle).size()+"/"+this.salles.get(salle).getFirst().size());
 
 		// Toutes les propositions des acheteurs ont été reçues
-		if(this.enchereTemp.size() == this.salles.get(salle).getFirst().size()){
+		if(this.enchereTemp.get(salle).size() == this.salles.get(salle).getFirst().size()){
 			if(enchereFinie(salle)){
 				return objetSuivant(salle);
 			}
@@ -88,32 +89,6 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 			}
 		}
 		return objetCourant.get(salle).getPrixCourant();
-////=======
-//	public synchronized int rencherir(int nouveauPrix, IAcheteur acheteur) throws Exception{
-//		
-//		// On ajoute la proposition d'un acheteur à une liste temporaire
-//		this.enchereTemp.put(acheteur, nouveauPrix);
-//		
-//		System.out.println(this.enchereTemp.size()+"/"+this.listeAcheteurs.size()); // DEBUG LINE
-//
-//		// Toutes les propositions des acheteurs ont été reçues
-//		if(this.enchereTemp.size() == this.listeAcheteurs.size()){
-//			if( enchereFinie() ) {
-//				return objetSuivant();
-//			}
-//			else{
-//				
-//				actualiserObjet();
-//				
-//				//On renvoit le résultat du tour
-//				for(IAcheteur each : this.listeAcheteurs){
-//					each.nouveauPrix(this.objetCourant.getPrixCourant(), this.acheteurCourant);
-//				}
-//			}
-//		}
-//		
-//		return objetCourant.getPrixCourant();
-//>>>>>>> master:Enchere/serveur/src/main/java/com/alma/control/VenteImpl.java
 	}
 
 
@@ -126,7 +101,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		this.enchereTemp.clear();
 		this.etatVente.set(salle, EtatVente.ATTENTE);
 
-		if(acheteurCourant != null){
+		if(acheteurCourant.get(salle) != null){
 			this.objetCourant.get(salle).setDisponible(false);
 			this.objetCourant.get(salle).setGagnant(this.acheteurCourant.get(salle).getPseudo());
 
@@ -140,8 +115,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 		// Lenteur entre changements : 
 		Thread.sleep(5000);
 		
-//<<<<<<< HEAD:Enchere/serveur/src/main/java/com/alma/main/VenteImpl.java
-		this.acheteurCourant = null;
+		this.acheteurCourant.set(salle, null);
 		this.salles.get(salle).getFirst().addAll(this.salles.get(salle).getSecond());
 //		this.listeAcheteurs.addAll(this.fileAttente);
 //		this.fileAttente.clear();
@@ -160,28 +134,9 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 			this.etatVente.set(salle, EtatVente.TERMINE);
 			for(IAcheteur each : this.salles.get(salle).getFirst()){
 				each.objetVendu("", objetCourant.get(salle).getPrixCourant(), objetCourant.get(salle).getDescription(), objetCourant.get(salle).getNom());
-//=======
-//		// On fait participer les Acheteurs en attente (ceux arriver pendant une enchère en cours)
-//		this.listeAcheteurs.addAll(this.fileAttente);
-//		this.fileAttente.clear();
-//
-//		//Il y a encore des objets à vendre
-//		if(!this.listeObjets.isEmpty()){
-//			this.acheteurCourant = null;
-//			this.objetCourant = this.listeObjets.pop();
-//			this.objetCourant.setGagnant("");
-//			this.etatVente = EtatVente.ENCHERISSEMENT;
-//			for(IAcheteur each : this.listeAcheteurs){
-//				each.reprendreEnchere("", objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
-//			}
-//		} else{
-//			this.etatVente = EtatVente.TERMINE;
-//			for(IAcheteur each : this.listeAcheteurs){
-//				//each.finEnchere();
-//				each.objetVendu(acheteurCourant.getPseudo(), objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
-//>>>>>>> master:Enchere/serveur/src/main/java/com/alma/control/VenteImpl.java
+
 			}
-			this.acheteurCourant = null;
+			this.acheteurCourant.set(salle, null);
 			return 0;
 		}
 		return this.objetCourant.get(salle).getPrixBase();
@@ -207,7 +162,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 				this.objetCourant.get(salle).setGagnant(this.acheteurCourant.get(salle).getPseudo());
 			}
 		}
-		this.enchereTemp.clear();
+		this.enchereTemp.get(salle).clear();
 	}
 
 
@@ -215,16 +170,12 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 	 * Permet de savoir si les enchères pour l'object proposé sont finies.
 	 * @return true Si uniquement des -1 sont reçus, false sinon.
 	 */
-//<<<<<<< HEAD:Enchere/serveur/src/main/java/com/alma/main/VenteImpl.java
-//	public boolean enchereFinie(int salle){	
-//		Set<IAcheteur> cles = this.enchereTemp.get(salle).keySet();
-//=======
+
 	public boolean enchereFinie(int salle){	
 		
 		boolean ret = false;
 		
 		Set<IAcheteur> cles = this.enchereTemp.get(salle).keySet();
-//>>>>>>> master:Enchere/serveur/src/main/java/com/alma/control/VenteImpl.java
 		Iterator<IAcheteur> it = cles.iterator();
 		
 		int cpt = 0;
@@ -270,23 +221,20 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 	}
 
 	public void ajouterObjet(String nom, String description, int prix, int salle) throws RemoteException {
+		
 		try {
+//			System.out.println("ajouter objet : " + nom + " ; salle : " + salle);
 			Objet newObj = new Objet(nom, description, prix);
 			this.listeObjets.get(salle).add(newObj);
-			if(objetCourant == null) {
-//<<<<<<< HEAD:Enchere/serveur/src/main/java/com/alma/main/VenteImpl.java
+			for (Objet o : listeObjets.get(salle))
+				System.out.println("objet : "+o.getNom());
+			if(objetCourant.get(salle) == null) {
 				this.objetCourant.set(salle, listeObjets.get(salle).pop());
 				this.objetCourant.get(salle).setGagnant("");
 				this.etatVente.set(salle, EtatVente.ENCHERISSEMENT);
 				for(IAcheteur each : this.salles.get(salle).getFirst()){
+					System.out.println("reprendre enchere");
 					each.reprendreEnchere("", objetCourant.get(salle).getPrixCourant(), objetCourant.get(salle).getDescription(), objetCourant.get(salle).getNom());
-//=======
-//				this.objetCourant = listeObjets.pop();
-//				this.objetCourant.setGagnant("");
-//				this.etatVente = EtatVente.ENCHERISSEMENT;
-//				for(IAcheteur each : this.listeAcheteurs){
-//					each.reprendreEnchere("", objetCourant.getPrixCourant(), objetCourant.getDescription(), objetCourant.getNom());
-//>>>>>>> master:Enchere/serveur/src/main/java/com/alma/control/VenteImpl.java
 				}
 			}
 		} catch (Exception e) {
