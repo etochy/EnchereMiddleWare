@@ -28,4 +28,7 @@ public interface IObjet extends Serializable {
 
 	void setGagnant(String gagnant);
 
+	public int getNumSalle();
+	
+	public void setNumSalle(int numSalle);
 }

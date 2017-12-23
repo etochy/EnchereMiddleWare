@@ -1,16 +1,14 @@
 package com.alma.data;
 
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-import com.alma.api.IObjet;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -59,23 +57,15 @@ public class Donnees {
 	 * 
 	 * @param objet
 	 *            l'objet a vendre.
-	 * @throws Exception
-	 *             so l'objet est deja en vente ou si l'acheteur n'est pas
-	 *             encore inscrit.
 	 */
 	public void ajouterArticle(Objet objet) throws Exception {
-		for (IObjet each : this.listeObjets) {
-			if (each.equals(objet)) {
-				throw new Exception("Objet deja existant");
-			}
-		}
-
 		this.listeObjets.add(objet);
 	}
 
 	/**
 	 * Permet de sauvegarder les objets courants dans un fichier.
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
 	public void save() throws IOException {
 		Writer writer;
@@ -86,17 +76,22 @@ public class Donnees {
 		writer.close();
 	}
 
-	public void load() throws FileNotFoundException {
-		Reader reader;
-		String json = "";
-		
-		reader = new FileReader(FILE_URL);
-		
-		// TODO charger le fichier
-		
+	/**
+	 * Permet de charger les objets sauvegardés.
+	 * 
+	 * @throws IOException
+	 */
+	public void load() throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(FILE_URL));
 		Type listType = new TypeToken<Stack<Objet>>() {
 		}.getType();
+
+		this.listeObjets = gson.fromJson(reader, listType);
+
+		reader.close();
 	}
+	
+	// GETTER AND SETTER
 
 	public Stack<Objet> getListeObjets() {
 		return listeObjets;
@@ -105,32 +100,4 @@ public class Donnees {
 	public void setListeObjets(Stack<Objet> listeObjets) {
 		this.listeObjets = listeObjets;
 	}
-
-	// TEST
-
-	public static void main(String[] args) {
-		Objet obj1 = new Objet("table", "très belle table", 14);
-		Objet obj2 = new Objet("cuillere", "Miaou", 40);
-
-		try {
-			Donnees d = Donnees.getInstance();
-			d.ajouterArticle(obj1);
-			d.ajouterArticle(obj2);
-
-			d.save();
-		} catch (NoSuchElementException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 }

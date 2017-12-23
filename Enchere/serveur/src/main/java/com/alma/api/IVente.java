@@ -28,7 +28,7 @@ public interface IVente extends Remote {
 	 * @param nouveau l'objet a vendre.
 	 * @throws RemoteException
 	 */
-	public void ajouterObjet(String nom, String description, int prix) throws RemoteException;
+	public void ajouterObjet(String nom, String description, int prix, int numSalle) throws RemoteException;
 	
 	public int getPrixCourant() throws RemoteException;
 	
