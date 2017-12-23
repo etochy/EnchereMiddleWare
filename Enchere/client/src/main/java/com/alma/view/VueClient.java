@@ -74,6 +74,7 @@ public class VueClient extends JFrame implements ActionListener{
 		// PANEL INSCRIPTION
 		inscriptionPanel.setLayout(new GridBagLayout());
 	    txtPseudo.setPreferredSize(new Dimension(200, 40));
+	    txtSalle.setPreferredSize(new Dimension(100, 40));
 	    txtIP.setPreferredSize(new Dimension(200, 40));
 	    btnPseudo.setPreferredSize(new Dimension(200,40));
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -81,25 +82,25 @@ public class VueClient extends JFrame implements ActionListener{
 	    gbc.gridx = 0;
 	    gbc.gridy = 1;
 	    gbc.gridheight = 1;
-	    gbc.gridwidth = 3;
+	    gbc.gridwidth = 2;
 	    inscriptionPanel.add(new JLabel("Pseudo : "), gbc);
 	    
 	    gbc.gridx = 0;
 	    gbc.gridy = 2;
 	    gbc.gridheight = 1;
-	    gbc.gridwidth = 3;
+	    gbc.gridwidth = 2;
 		inscriptionPanel.add(txtPseudo, gbc);
 		
-		gbc.gridx = 0;
+		gbc.gridx = 2;
 	    gbc.gridy = 1;
 	    gbc.gridheight = 1;
-	    gbc.gridwidth = 3;
+	    gbc.gridwidth = 2;
 	    inscriptionPanel.add(new JLabel("Salle : "), gbc);
 	    
-	    gbc.gridx = 0;
+	    gbc.gridx = 2;
 	    gbc.gridy = 2;
 	    gbc.gridheight = 1;
-	    gbc.gridwidth = 3;
+	    gbc.gridwidth = 1;
 		inscriptionPanel.add(txtSalle, gbc);
 		
 		gbc.gridx = 0;
@@ -116,7 +117,7 @@ public class VueClient extends JFrame implements ActionListener{
 	    gbc.gridx = 0;
 	    gbc.gridy = 5;
 	    gbc.gridheight = 1;
-	    gbc.gridwidth = 1;
+	    gbc.gridwidth = 3;
 		inscriptionPanel.add(btnPseudo, gbc);
 		
 		
@@ -277,7 +278,7 @@ public class VueClient extends JFrame implements ActionListener{
 		// INSCRIPTION
 		else if(arg0.getSource().equals(btnPseudo)) {
 			try {
-				setClient(new Acheteur(txtPseudo.getText(), txtIP.getText()));
+				setClient(new Acheteur(txtPseudo.getText(), txtIP.getText(),Integer.parseInt(txtSalle.getText())));
 				currentClient.inscription();
 				changerGUI(this.mainPanel);
 				logs.setText(logs.getText()+"\nBienvenu");

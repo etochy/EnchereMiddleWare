@@ -22,8 +22,9 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	private EtatClient etat = EtatClient.ATTENTE;
 	private Chrono chrono = new Chrono(30000, this); // Chrono de 30sc
 
-	public Acheteur(String pseudo, String ip) throws RemoteException {
+	public Acheteur(String pseudo, String ip, int salle) throws RemoteException {
 		super();
+		this.salle = salle;
 		this.chrono.start();
 		this.pseudo = pseudo;
 		this.setAdresseServeur(ip);

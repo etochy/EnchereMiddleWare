@@ -19,7 +19,7 @@ import com.alma.api.IVente;
 public class VenteImpl extends UnicastRemoteObject implements IVente{
 
 	private static final long serialVersionUID = 1L;
-	private List<Pair<List<IAcheteur>, List<IAcheteur>>> salles; // listeAcheteurs - fileAttente
+	private List<Pair<List<IAcheteur>, List<IAcheteur>>> salles = new ArrayList<Pair<List<IAcheteur>, List<IAcheteur>>>(); // listeAcheteurs - fileAttente
 //	private List<IAcheteur> listeAcheteurs = new ArrayList<IAcheteur>();
 //	private List<IAcheteur> fileAttente = new ArrayList<IAcheteur>();
 	private List<Map<IAcheteur, Integer>> enchereTemp = new ArrayList<Map<IAcheteur, Integer>>();
@@ -37,10 +37,12 @@ public class VenteImpl extends UnicastRemoteObject implements IVente{
 			this.listeObjets.add(new Stack<Objet>());
 			this.etatVente.add(EtatVente.ATTENTE);
 			this.enchereTemp.add(new HashMap<IAcheteur, Integer>());
+			this.salles.add(new Pair<List<IAcheteur>, List<IAcheteur>>(new ArrayList<IAcheteur>(), new ArrayList<IAcheteur>()));
 		}
 	}
 
 	public synchronized boolean inscriptionAcheteur(String login, IAcheteur acheteur, int salle) throws Exception{
+		System.out.println("add acheteur salle : " + salle);
 		for(IAcheteur each : salles.get(salle).getFirst()){ //listeAcheteurs
 			if(each.getPseudo().equals(login) || each.getPseudo().equals(acheteur.getPseudo())){
 				throw new Exception("Login deja pris");
