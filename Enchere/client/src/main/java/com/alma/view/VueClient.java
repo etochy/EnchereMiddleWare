@@ -15,8 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-import com.alma.api.IObjet;
 import com.alma.control.Acheteur;
 
 public class VueClient extends JFrame implements ActionListener{
