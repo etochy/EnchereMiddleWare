@@ -8,14 +8,11 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
-import com.alma.data.Donnees;
 import com.alma.data.EtatVente;
 
-public class Serveur{
+public class Serveur {
 
 	private final static int port = 8090;
-	//private static Donnees bdd = Donnees.getInstance();
-
 
 	public static void main(String[] argv) {
 
@@ -24,22 +21,21 @@ public class Serveur{
 			VenteImpl vente = new VenteImpl();
 
 			LocateRegistry.createRegistry(port);
-			Naming.bind("//localhost:"+port+"/enchere", vente);
+			Naming.bind("//localhost:" + port + "/enchere", vente);
 
-			// Serveur lanc� en continu, m�me si aucune enchere
-			while(true){
+			// Run server
+			while (true) {
 
-				//On recrée une nouvelle vente
-				for (int i=0; i<10; ++i)
-					if(vente.getEtatVente(i) == EtatVente.TERMINE){
-						//TODO : Recréer correctement les ventes ?
+				// Create a new sold
+				for (int i = 0; i < 10; ++i){
+					if (vente.getEtatVente(i) == EtatVente.TERMINE) {
+						// TODO : Recréer correctement les ventes ?
 					}
-
+				}
 			}
 
-		} catch(RemoteException |  MalformedURLException | UnknownHostException | AlreadyBoundException e){
+		} catch (RemoteException | MalformedURLException | UnknownHostException | AlreadyBoundException e) {
 			e.printStackTrace();
-		}		
-	}	
+		}
+	}
 }
-
