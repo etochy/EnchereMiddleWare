@@ -15,3 +15,8 @@ La vente commence par défaut avec 2 clients. A partir de ce point, d'autres cli
 - Interface serveur permettant de lancer et de gerer les ventes
 - Afficher plus d'info au clients
 
+# Mise à jour (24/12/2017)
+
+- Corrections et améliorations de l'application
+- Séparation du projet en deux projets Maven
+
