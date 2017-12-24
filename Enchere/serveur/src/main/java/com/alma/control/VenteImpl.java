@@ -291,12 +291,8 @@ public class VenteImpl extends UnicastRemoteObject implements IVente {
 	
 	public void disconnect(IAcheteur acheteur) {
 		for(int i = 0; i< salles.size(); ++i) {
-			System.out.println("First list "+i+" : "+salles.get(i).getFirst().size());
-			System.out.println("Second list "+i+" : "+salles.get(i).getSecond().size());
 			salles.get(i).getFirst().remove(acheteur);
 			salles.get(i).getSecond().remove(acheteur);
-			System.out.println("First list "+i+" : "+salles.get(i).getFirst().size());
-			System.out.println("Second list "+i+" : "+salles.get(i).getSecond().size());
 		}
 	}
 
