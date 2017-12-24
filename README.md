@@ -18,5 +18,5 @@ La vente commence par défaut avec 2 clients. A partir de ce point, d'autres cli
 # Mise à jour (24/12/2017)
 
 - Corrections et améliorations de l'application
-- Séparation du projet en deux projets Maven
+- Séparation du projet en deux projets Maven (le mieux est de charger les projets dans eclipse pour les faire fonctionner)
 
