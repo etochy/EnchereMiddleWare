@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.Stack;
 
 import com.alma.api.IAcheteur;
-import com.alma.api.IObjet;
 import com.alma.api.IVente;
 import com.alma.data.Data;
 import com.alma.data.EtatVente;
@@ -301,24 +300,12 @@ public class VenteImpl extends UnicastRemoteObject implements IVente {
 		}
 	}
 
-	public IObjet getObjet(int salle) throws RemoteException {
-		return this.objetCourant.get(salle);
-	}
-
 	public List<IAcheteur> getListeAcheteurs(int salle) {
 		return this.salles.get(salle).getFirst();
 	}
 
 	public void setListeAcheteurs(List<IAcheteur> listeAcheteurs, int salle) {
 		this.salles.get(salle).setFirst(listeAcheteurs);
-	}
-
-	public IObjet getObjetCourant(int salle) {
-		return objetCourant.get(salle);
-	}
-
-	public void setObjetCourant(IObjet objetCourant, int salle) {
-		this.objetCourant.set(salle, (Objet) objetCourant);
 	}
 
 	public Stack<Objet> getListeObjets(int salle) {

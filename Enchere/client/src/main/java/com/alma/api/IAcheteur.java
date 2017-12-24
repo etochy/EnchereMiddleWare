@@ -3,8 +3,6 @@ package com.alma.api;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import com.alma.data.EtatClient;
-
 public interface IAcheteur extends Remote {
 
 	/**

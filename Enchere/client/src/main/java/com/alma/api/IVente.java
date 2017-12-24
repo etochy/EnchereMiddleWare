@@ -3,8 +3,6 @@ package com.alma.api;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import com.alma.control.Acheteur;
-
 public interface IVente extends Remote {
 
 	/**
@@ -37,6 +35,5 @@ public interface IVente extends Remote {
 	public void disconnect(IAcheteur acheteur) throws RemoteException;
 	
 	public String getGagnantEnchere(int salle) throws RemoteException;
-
 
 }
