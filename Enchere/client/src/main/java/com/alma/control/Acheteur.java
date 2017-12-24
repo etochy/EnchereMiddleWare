@@ -34,7 +34,7 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	private IVente connexionServeur() {
 		try {
 			IVente serveur = (IVente) Naming.lookup("//" + adresseServeur);
-			System.out.println("Connexion au serveur " + adresseServeur + " reussi.");
+			System.out.println("Connexion au serveur " + adresseServeur + " reussie.");
 			return serveur;
 		} catch (Exception e) {
 			System.out.println("Connexion au serveur " + adresseServeur + " impossible.");
@@ -115,18 +115,14 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 	
 	public void nouvelleSoumission(String nom, String description, int prix) {
 		try {
-//<<<<<<< HEAD
-			serveur.ajouterObjet(nom, description, prix,salle);
-//=======
-//			serveur.ajouterObjet(nom, description, prix, 0);
-//>>>>>>> bdd
+			serveur.ajouterObjet(nom, description, prix, salle);
 			System.out.println("Soumission de l'objet " + nom + " au serveur.");
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
 	}
 
-	// getters and setters
+	// Getters and Setters
 
 	// REMOTE
 	public long getChrono() {
@@ -164,6 +160,14 @@ public class Acheteur extends UnicastRemoteObject implements IAcheteur {
 
 	public void setAdresseServeur(String adresseServeur) {
 		this.adresseServeur = adresseServeur;
+	}
+
+	public void disconnect() {
+		try {
+			this.serveur.disconnect(this);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

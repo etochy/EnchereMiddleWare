@@ -34,6 +34,8 @@ public interface IVente extends Remote {
 	
 	public String getGagnantEnchere(int salle) throws RemoteException;
 	
+	public void disconnect(IAcheteur acheteur) throws RemoteException;
+	
 	public IObjet getObjet(int salle) throws RemoteException;
 
 

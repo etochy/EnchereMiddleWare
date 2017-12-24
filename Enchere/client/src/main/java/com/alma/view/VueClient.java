@@ -283,7 +283,16 @@ public class VueClient extends JFrame implements ActionListener{
 				setClient(new Acheteur(txtPseudo.getText(), txtIP.getText(),Integer.parseInt(txtSalle.getText())));
 				currentClient.inscription();
 				changerGUI(this.mainPanel);
-				logs.setText(logs.getText()+"\nBienvenu");
+				logs.setText(logs.getText()+"\nBienvenue");
+				
+				// Gestion de la déconnexion
+				this.addWindowListener(new java.awt.event.WindowAdapter() {
+				    @Override
+				    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				        disconnect();
+				    }
+				});
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Inscription impossible");
@@ -312,10 +321,6 @@ public class VueClient extends JFrame implements ActionListener{
 	 * @throws RemoteException 
 	 */
 	public void changerGUI(JPanel vue) throws RemoteException{
-		// TODO : Réactualiser correctement
-		/*if(this.currentClient.getCurrentObjet() != null){
-			actualiserObjet();
-		}*/
 		this.getContentPane().removeAll();
 		this.setContentPane(vue);
 		this.getContentPane().revalidate();
@@ -354,6 +359,11 @@ public class VueClient extends JFrame implements ActionListener{
 		pnlSoumettre.add(btnSoumettreObjet);
 		
 		frmSoumettre.setVisible(true);
+	}
+	
+	public int disconnect() {
+		this.currentClient.disconnect();
+		return JFrame.EXIT_ON_CLOSE;
 	}
 	
 	public JPanel getMainPanel() {
