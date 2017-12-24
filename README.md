@@ -19,4 +19,4 @@ La vente commence par défaut avec 2 clients. A partir de ce point, d'autres cli
 
 - Corrections et améliorations de l'application
 - Séparation du projet en deux projets Maven (le mieux est de charger les projets dans eclipse pour les faire fonctionner)
-
+- Le rapport correspondant est Doc/Rapport_V2.pdf
