@@ -57,7 +57,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente {
 				objetCourant.add(null);
 				acheteurCourant.add(null);
 				enchereCourante.add(new HashMap<IAcheteur, Integer>());
-
+				
 				for (Objet obj : d.getListNotSoldObject()) {
 					if (obj.getNumSalle() == i) {
 						listeObjets.get(i).push(obj);
@@ -68,11 +68,9 @@ public class VenteImpl extends UnicastRemoteObject implements IVente {
 					objetCourant.set(i, listeObjets.get(i).pop());
 				}
 			}
-
 		} catch (NoSuchElementException | IllegalArgumentException | IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public synchronized boolean inscriptionAcheteur(String login, IAcheteur acheteur, int salle) throws Exception {
@@ -288,9 +286,9 @@ public class VenteImpl extends UnicastRemoteObject implements IVente {
 		}
 
 	}
-	
+
 	public void disconnect(IAcheteur acheteur) {
-		for(int i = 0; i< salles.size(); ++i) {
+		for (int i = 0; i < salles.size(); ++i) {
 			salles.get(i).getFirst().remove(acheteur);
 			salles.get(i).getSecond().remove(acheteur);
 		}

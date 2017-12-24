@@ -73,6 +73,7 @@ public class Data {
 	 * Load json data files.
 	 */
 	private void load() throws IOException {
+		List<Objet> jsonData = null;
 		File fileNotSold = new File(URL_NOT_SOLD);
 		File fileSold = new File(URL_SOLD);
 		BufferedReader readerNotSold = null;
@@ -83,14 +84,22 @@ public class Data {
 		// Load not sold objects
 		if (fileNotSold.exists()) {
 			readerNotSold = new BufferedReader(new FileReader(fileNotSold));
-			listNotSoldObject = gson.fromJson(readerNotSold, listType);
+			jsonData = gson.fromJson(readerNotSold, listType);
+
+			if (jsonData != null)
+				listNotSoldObject.addAll(jsonData);
+
 			readerNotSold.close();
 		}
 
 		// Load sold objects
 		if (fileSold.exists()) {
 			readerSold = new BufferedReader(new FileReader(URL_SOLD));
-			listSoldObject = gson.fromJson(readerSold, listType);
+			jsonData = gson.fromJson(readerSold, listType);
+
+			if (jsonData != null)
+				listSoldObject.addAll(jsonData);
+
 			readerSold.close();
 		}
 	}
