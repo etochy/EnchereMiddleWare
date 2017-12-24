@@ -271,7 +271,7 @@ public class VenteImpl extends UnicastRemoteObject implements IVente {
 
 			for (Objet o : listeObjets.get(salle))
 				System.out.println("objet : " + o.getNom());
-			if (objetCourant.get(salle) == null) {
+			if (objetCourant.get(salle) == null || etatVente.get(salle) == EtatVente.TERMINE) {
 				this.objetCourant.set(salle, listeObjets.get(salle).pop());
 				this.objetCourant.get(salle).setGagnant("");
 				this.etatVente.set(salle, EtatVente.ENCHERISSEMENT);
