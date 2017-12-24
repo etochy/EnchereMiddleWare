@@ -29,7 +29,7 @@ public class Serveur {
 				// Create a new sold
 				for (int i = 0; i < 10; ++i){
 					if (vente.getEtatVente(i) == EtatVente.TERMINE) {
-						// TODO : Recréer correctement les ventes ?
+						
 					}
 				}
 			}
